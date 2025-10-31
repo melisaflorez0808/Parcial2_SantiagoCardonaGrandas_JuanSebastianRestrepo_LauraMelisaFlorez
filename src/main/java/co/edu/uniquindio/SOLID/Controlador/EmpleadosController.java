@@ -57,6 +57,13 @@ public class EmpleadosController implements Initializable {
         cmbEmpRol.setValue(empleadoDTO.getRol());
     }
 
+    private void limpiarCampos() {
+        txtEmpId.clear();
+        txtEmpNombre.clear();
+        cmbEmpRol.setValue(null);
+        txtEmpId.setDisable(false);
+    }
+
     public void configurarTabla(){
         colEmpId.setCellValueFactory(cd -> new javafx.beans.property.SimpleStringProperty(cd.getValue().getId()));
         colEmpNombre.setCellValueFactory(cd -> new javafx.beans.property.SimpleStringProperty(cd.getValue().getNombre()));
@@ -97,6 +104,7 @@ public class EmpleadosController implements Initializable {
             if (empleadoFacade.agregarEmpleado(emp)) {
                 cargarEmpleados();
                 mostrarMensaje("Empleado agregado exitosamente");
+                limpiarCampos();
                 System.out.println("Empleado agregado: " + emp.getId());
             } else {
                 mostrarMensaje("Error: Ya existe un empleado con la cédula " + emp.getId());
@@ -141,6 +149,7 @@ public class EmpleadosController implements Initializable {
             if (empleadoFacade.actualizarEmpleado(empleadoSeleccionado)) {
                 tblEmpleados.refresh(); //es como decir actualizar
                 mostrarMensaje("Empleado actualizado exitosamente");
+                limpiarCampos();
                 System.out.println("Empleado actualizado: " + empleadoSeleccionado.getId());
             } else {
                 mostrarMensaje("Error: No se pudo actualizar el empleado");
@@ -170,6 +179,7 @@ public class EmpleadosController implements Initializable {
                 if (empleadoFacade.eliminarEmpleado(empleadoSeleccionado.getId())) {
                     cargarEmpleados();
                     mostrarMensaje("Empleado eliminado exitosamente");
+                    limpiarCampos();
                     System.out.println("Empleado eliminado: " + empleadoSeleccionado.getId());
                 } else {
                     mostrarMensaje("Error: No se pudo eliminar el empleado");
@@ -183,23 +193,25 @@ public class EmpleadosController implements Initializable {
 
     @FXML
     void activarEmpleado() {
-        String id = txtEmpId != null ? txtEmpId.getText() : null;
-        if (id == null || id.trim().isEmpty()) { mostrarMensaje("El ID es obligatorio"); }
         try {
-            EmpleadoDTO empleadoDTO = empleadoFacade.buscarEmpleadoPorCedula(id);
-            empleadoFacade.activarEmpleado(empleadoDTO);
-            tblEmpleados.refresh();
+            EmpleadoDTO empleadoDTO = empleadoSeleccionado; //Traigo la selección
+            if(empleadoFacade.buscarEmpleadoPorCedula(empleadoDTO.getId()) != null){
+                empleadoFacade.activarEmpleado(empleadoDTO);
+                empleadoDTO.setActivo(true);
+                tblEmpleados.refresh();
+            }
         } catch (IllegalArgumentException e) { mostrarMensaje(e.getMessage()); }
     }
 
     @FXML
     void inactivarEmpleado() {
-        String id = txtEmpId != null ? txtEmpId.getText() : null;
-        if (id == null || id.trim().isEmpty()) { mostrarMensaje("El ID es obligatorio"); }
         try {
-            EmpleadoDTO empleadoDTO = empleadoFacade.buscarEmpleadoPorCedula(id);
-            empleadoFacade.inactivarEmpleado(empleadoDTO);
-            tblEmpleados.refresh();
+            EmpleadoDTO empleadoDTO = empleadoSeleccionado; //Traigo la selección
+            if(empleadoFacade.buscarEmpleadoPorCedula(empleadoDTO.getId()) != null) {
+                empleadoFacade.inactivarEmpleado(empleadoDTO);
+                empleadoDTO.setActivo(false);
+                tblEmpleados.refresh();
+            }
         } catch (IllegalArgumentException e) { mostrarMensaje(e.getMessage()); }
     }
 }
