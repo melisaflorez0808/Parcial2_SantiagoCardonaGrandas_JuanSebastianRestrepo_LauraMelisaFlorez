@@ -13,26 +13,25 @@ public class Producto {
         this.stock = 0;
     }
 
-    public String getSku() {return Sku;}
-    public String getNombre() {return nombre;}
-    public double getPrecio() {return precio;}
-    public int getStock() {return stock;}
-    
-    public void setNombre(String nombre) {this.nombre = nombre;}
-    public void setPrecio(double precio) {this.precio = precio;}
-
     public void aumentarStock(int cantidad) {
-        if (cantidad > 0) this.stock += cantidad;
+        this.stock += cantidad;
+
     }
 
     public void disminuirStock(int cantidad) {
-        if (cantidad > 0 && this.stock - cantidad >= 0) this.stock -= cantidad;
+        this.stock -= cantidad;
     }
 
     public boolean tieneStockSuficiente(int cantidadRequerida) {
         return cantidadRequerida >= 0 && this.stock >= cantidadRequerida;
     }
 
+    public String getSku() {return Sku;}
+    public String getNombre() {return nombre;}
+    public double getPrecio() {return precio;}
+    public int getStock() {return stock;}
+    public void setNombre(String nombre) {this.nombre = nombre;}
+    public void setPrecio(double precio) {this.precio = precio;}
     @Override
     public String toString() {
         return nombre != null ? nombre : (Sku != null ? Sku : "");

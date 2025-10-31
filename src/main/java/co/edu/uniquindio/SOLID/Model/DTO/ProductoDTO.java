@@ -9,6 +9,7 @@ public class ProductoDTO {
     private StringProperty sku;
     private StringProperty nombre;
     private DoubleProperty precio;
+    private int stock;
 
     public ProductoDTO() {
         this.sku = new SimpleStringProperty();
@@ -31,9 +32,13 @@ public class ProductoDTO {
     public void setNombre(String nombre) { this.nombre.set(nombre); }
     public void setPrecio(double precio) { this.precio.set(precio); }
 
-    public StringProperty skuProperty() { return sku; }
-    public StringProperty nombreProperty() { return nombre; }
-    public DoubleProperty precioProperty() { return precio; }
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
 
     @Override
     public String toString() {

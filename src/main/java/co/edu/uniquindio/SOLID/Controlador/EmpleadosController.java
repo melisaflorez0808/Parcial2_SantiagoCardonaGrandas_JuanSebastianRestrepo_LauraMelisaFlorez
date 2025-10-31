@@ -1,10 +1,8 @@
 package co.edu.uniquindio.SOLID.Controlador;
 
-import co.edu.uniquindio.SOLID.Model.DTO.ClienteDTO;
 import co.edu.uniquindio.SOLID.Model.DTO.EmpleadoDTO;
 import co.edu.uniquindio.SOLID.Model.Empleado;
-import co.edu.uniquindio.SOLID.Model.Minimercado;
-import co.edu.uniquindio.SOLID.Service.Fachadas.EmpleadoFacade;
+import co.edu.uniquindio.SOLID.Service.Fachadas.EmpresaAdminFacade;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -29,12 +27,12 @@ public class EmpleadosController implements Initializable {
     @FXML private Label mensaje;
 
     private ObservableList<EmpleadoDTO> empleados;
-    private EmpleadoFacade empleadoFacade;
+    private EmpresaAdminFacade empresaAdminFacade;
     private EmpleadoDTO empleadoSeleccionado;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        empleadoFacade = new EmpleadoFacade();
+        empresaAdminFacade = new EmpresaAdminFacade();
         empleados = FXCollections.observableArrayList();
         cmbEmpRol.setItems(FXCollections.observableArrayList(Empleado.Rol.values()));
         configurarTabla();
@@ -75,7 +73,7 @@ public class EmpleadosController implements Initializable {
 
     private void cargarEmpleados() {
         empleados.clear();
-        empleados.addAll(empleadoFacade.obtenerTodosLosEmpleados());
+        empleados.addAll(empresaAdminFacade.obtenerTodosLosEmpleados());
         mostrarMensaje("Clientes cargados: " + empleados.size());
     }
 
@@ -96,7 +94,7 @@ public class EmpleadosController implements Initializable {
                     txtEmpNombre.getText().trim(),
                     cmbEmpRol.getValue());
 
-            if (empleadoFacade.agregarEmpleado(emp)) {
+            if (empresaAdminFacade.agregarEmpleado(emp)) {
                 cargarEmpleados();
                 mostrarMensaje("Empleado agregado exitosamente");
                 limpiarCampos();
@@ -141,7 +139,7 @@ public class EmpleadosController implements Initializable {
             empleadoSeleccionado.setNombre(txtEmpNombre.getText().trim());
             empleadoSeleccionado.setRol(cmbEmpRol.getValue());
 
-            if (empleadoFacade.actualizarEmpleado(empleadoSeleccionado)) {
+            if (empresaAdminFacade.actualizarEmpleado(empleadoSeleccionado)) {
                 tblEmpleados.refresh(); //es como decir actualizar
                 mostrarMensaje("Empleado actualizado exitosamente");
                 limpiarCampos();
@@ -171,7 +169,7 @@ public class EmpleadosController implements Initializable {
             Optional<ButtonType> resultado = confirmacion.showAndWait();
 
             if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-                if (empleadoFacade.eliminarEmpleado(empleadoSeleccionado.getId())) {
+                if (empresaAdminFacade.eliminarEmpleado(empleadoSeleccionado.getId())) {
                     cargarEmpleados();
                     mostrarMensaje("Empleado eliminado exitosamente");
                     limpiarCampos();
@@ -190,8 +188,8 @@ public class EmpleadosController implements Initializable {
     void activarEmpleado() {
         try {
             EmpleadoDTO empleadoDTO = empleadoSeleccionado; //Traigo la selección
-            if(empleadoFacade.buscarEmpleadoPorCedula(empleadoDTO.getId()) != null){
-                empleadoFacade.activarEmpleado(empleadoDTO);
+            if(empresaAdminFacade.buscarEmpleadoPorCedula(empleadoDTO.getId()) != null){
+                empresaAdminFacade.activarEmpleado(empleadoDTO);
                 empleadoDTO.setActivo(true); //Si lo halló lo activé en la lista de minimercado, activo DTO que es el que estoy mostrando en pantalla
                 tblEmpleados.refresh();
             }
@@ -202,8 +200,8 @@ public class EmpleadosController implements Initializable {
     void inactivarEmpleado() {
         try {
             EmpleadoDTO empleadoDTO = empleadoSeleccionado; //Traigo la selección
-            if(empleadoFacade.buscarEmpleadoPorCedula(empleadoDTO.getId()) != null) {
-                empleadoFacade.inactivarEmpleado(empleadoDTO);
+            if(empresaAdminFacade.buscarEmpleadoPorCedula(empleadoDTO.getId()) != null) {
+                empresaAdminFacade.inactivarEmpleado(empleadoDTO);
                 cargarEmpleados(); //U otra opción en cargar de nuevo los empleado que directamente accede a la base de datos que ya actualicé (esta me gusta más)
             }
         } catch (IllegalArgumentException e) { mostrarMensaje(e.getMessage()); }

@@ -1,17 +1,15 @@
 package co.edu.uniquindio.SOLID.Service.Fachadas;
 
 import co.edu.uniquindio.SOLID.Model.DTO.EmpleadoDTO;
-import co.edu.uniquindio.SOLID.Model.Empleado;
 import co.edu.uniquindio.SOLID.Service.EmpleadoService;
-import co.edu.uniquindio.SOLID.utils.Mappers.EmpleadoMapper;
 
 import java.util.List;
 
-public class EmpleadoFacade {
+public class EmpresaAdminFacade {
 
     private final EmpleadoService empleadoService;
 
-    public EmpleadoFacade() {
+    public EmpresaAdminFacade() {
         this.empleadoService = new EmpleadoService();
     }
 
@@ -42,5 +40,5 @@ public class EmpleadoFacade {
     public boolean eliminarEmpleado(String id) {
         return empleadoService.eliminarEmpleado(id);
     }
-    
+
 }

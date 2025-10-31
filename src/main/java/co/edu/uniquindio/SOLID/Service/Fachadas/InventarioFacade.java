@@ -1,20 +1,21 @@
 package co.edu.uniquindio.SOLID.Service.Fachadas;
-
+import co.edu.uniquindio.SOLID.Model.*;
+import co.edu.uniquindio.SOLID.Model.DTO.EntradaInventarioDTO;
 import co.edu.uniquindio.SOLID.Model.DTO.ProveedorDTO;
-import co.edu.uniquindio.SOLID.Model.Proveedor;
+import co.edu.uniquindio.SOLID.Service.InventarioService;
 import co.edu.uniquindio.SOLID.Service.ProveedorService;
-
 import java.util.List;
 
 public class InventarioFacade {
     private final ProveedorService proveedorService;
+    private final InventarioService inventarioService;
 
     public InventarioFacade() {
         this.proveedorService = new ProveedorService();
+        this.inventarioService = new InventarioService();
     }
 
     /*PROVEEDORES*/
-
     public boolean agregarProveedor(ProveedorDTO proveedorDTO) {
         return proveedorService.agregarProveedor(proveedorDTO);
     }
@@ -38,11 +39,21 @@ public class InventarioFacade {
         return proveedorService.eliminarProveedor(nit);
     }
 
-    public Proveedor buscarProveedorEntity(String nit){
-        return proveedorService.buscarProvedorEntity(nit);
-    }
-
     public ProveedorDTO buscarProveedorDTO(String nit){
         return proveedorService.buscarProveedorPorNit(nit);
+    }
+
+    /*INVENTARIO*/
+
+    public void registrarEntrada(EntradaInventarioDTO dto) {
+        inventarioService.registrarEntrada(dto);
+    }
+
+    private void confirmarEntrada(EntradaInventario entrada) {
+        inventarioService.confirmarEntrada(entrada);
+    }
+
+    public void retirarProducto(String sku, int cantidad) {
+        inventarioService.retirarProducto(sku, cantidad);
     }
 }

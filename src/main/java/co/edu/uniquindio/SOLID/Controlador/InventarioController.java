@@ -1,12 +1,14 @@
 package co.edu.uniquindio.SOLID.Controlador;
 
 import co.edu.uniquindio.SOLID.Model.DTO.ClienteDTO;
+import co.edu.uniquindio.SOLID.Model.DTO.ProductoDTO;
 import co.edu.uniquindio.SOLID.Model.DTO.ProveedorDTO;
 import co.edu.uniquindio.SOLID.Model.EntradaInventario;
 import co.edu.uniquindio.SOLID.Model.Minimercado;
 import co.edu.uniquindio.SOLID.Model.Producto;
 import co.edu.uniquindio.SOLID.Model.Proveedor;
 import co.edu.uniquindio.SOLID.Service.Fachadas.InventarioFacade;
+import co.edu.uniquindio.SOLID.Service.Fachadas.MinimercadoFacade;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -30,28 +32,28 @@ public class InventarioController implements Initializable {
     @FXML private TextField txtProvContacto;
     @FXML private TextField txtProvEmail;
     @FXML private TextField txtProvTelefono;
-    @FXML private ComboBox<Producto> cmbProductoEntrada;
+    @FXML private ComboBox<ProductoDTO> cmbProductoEntrada;
     @FXML private Spinner<Integer> spnCantidadEntrada;
     @FXML private Label lblResultadoEntrada;
-    @FXML private TableView<Producto> tblProductosInv;
-    @FXML private TableColumn<Producto, String> colInvSku;
-    @FXML private TableColumn<Producto, String> colInvNombre;
-    @FXML private TableColumn<Producto, Number> colInvPrecio;
-    @FXML private TableColumn<Producto, Number> colInvStock;
+    @FXML private TableView<ProductoDTO> tblProductosInv;
+    @FXML private TableColumn<ProductoDTO, String> colInvSku;
+    @FXML private TableColumn<ProductoDTO, String> colInvNombre;
+    @FXML private TableColumn<ProductoDTO, Number> colInvPrecio;
+    @FXML private TableColumn<ProductoDTO, Number> colInvStock;
     @FXML private Label lblMensaje;
 
     private ObservableList<ProveedorDTO> proveedores;
-    private ObservableList<Producto> productos;
-    private Minimercado minimercado = Minimercado.getInstancia();////SE DEBE QUITAR AL FINAL
+    private ObservableList<ProductoDTO> productos;
     private InventarioFacade inventarioFacade;
     private ProveedorDTO proveedorSeleccionado;
-
+    private MinimercadoFacade minimercadoFacade;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         inventarioFacade=new InventarioFacade();
         proveedores = FXCollections.observableArrayList(inventarioFacade.getProveedores());
-        productos = FXCollections.observableArrayList(minimercado.getProductos());
+        minimercadoFacade = new MinimercadoFacade();
+        productos = FXCollections.observableArrayList(minimercadoFacade.obtenerTodosLosProductos());
         cargarProveedores();
         configurarSeleccionListaProveedores();
         if (cmbProductoEntrada != null) {
@@ -242,7 +244,7 @@ public class InventarioController implements Initializable {
     @FXML
     void confirmarEntradaInventario() {
         ProveedorDTO proveedorDTO = cmbProveedores != null ? cmbProveedores.getValue() : null;
-        Producto prod = cmbProductoEntrada != null ? cmbProductoEntrada.getValue() : null;
+        ProductoDTO prod = cmbProductoEntrada != null ? cmbProductoEntrada.getValue() : null;
         Integer cant = spnCantidadEntrada != null ? spnCantidadEntrada.getValue() : 0;
         
         // Validaciones de campos
@@ -260,7 +262,7 @@ public class InventarioController implements Initializable {
         }
         
         try {
-            minimercado.registrarEntradaInventario(proveedorDTO, prod, cant);
+            minimercadoFacade.registrarEntradaInventario(proveedorDTO, prod, cant);
             if (lblResultadoEntrada != null) lblResultadoEntrada.setText("Entrada confirmada. Stock " + prod.getSku() + ": " + prod.getStock());
             if (tblProductosInv != null) tblProductosInv.refresh();
         } catch (IllegalArgumentException e) {

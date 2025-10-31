@@ -1,10 +1,6 @@
 package co.edu.uniquindio.SOLID.Service.Fachadas;
 
-import co.edu.uniquindio.SOLID.Model.DTO.ClienteDTO;
-import co.edu.uniquindio.SOLID.Model.DTO.ProductoDTO;
-import co.edu.uniquindio.SOLID.Model.DTO.PedidoDTO;
-import co.edu.uniquindio.SOLID.Model.DTO.ItemPedidoDTO;
-import co.edu.uniquindio.SOLID.Model.DTO.ResumenPedidoDTO;
+import co.edu.uniquindio.SOLID.Model.DTO.*;
 import co.edu.uniquindio.SOLID.Service.ClienteService;
 import co.edu.uniquindio.SOLID.Service.ProductoService;
 import co.edu.uniquindio.SOLID.Service.PedidoService;

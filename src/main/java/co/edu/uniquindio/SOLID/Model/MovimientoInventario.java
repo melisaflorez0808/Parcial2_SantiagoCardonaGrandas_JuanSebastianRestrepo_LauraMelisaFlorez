@@ -3,7 +3,7 @@ package co.edu.uniquindio.SOLID.Model;
 import java.time.LocalDateTime;
 
 public class MovimientoInventario {
-    public enum Tipo { ENTRADA }
+    public enum Tipo { ENTRADA, SALIDA }
 
     private String id;
     private Tipo tipo;

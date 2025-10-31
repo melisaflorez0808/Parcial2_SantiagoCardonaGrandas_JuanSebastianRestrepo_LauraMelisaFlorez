@@ -10,19 +10,17 @@ import java.util.List;
 
 public class EntradaInventarioDTO {
     private String id;
-    private Proveedor proveedor;
+    private String nitProveedor;
     private LocalDateTime fecha;
-    private List<ItemEntrada> items;
-    private boolean confirmada;
-    private List<MovimientoInventario> movimientosGenerados;
+    private List<ItemEntradaDTO> items;
 
-    public EntradaInventarioDTO(String id, Proveedor proveedor) {
+    public EntradaInventarioDTO() {}
+
+    public EntradaInventarioDTO(String id, String nitProveedor, List<ItemEntradaDTO> items) {
         this.id = id;
-        this.proveedor = proveedor;
+        this.nitProveedor = nitProveedor;
         this.fecha = LocalDateTime.now();
-        this.items = new ArrayList<>();
-        this.confirmada = false;
-        this.movimientosGenerados = new ArrayList<>();
+        this.items = items;
     }
 
     public String getId() {
@@ -33,12 +31,12 @@ public class EntradaInventarioDTO {
         this.id = id;
     }
 
-    public Proveedor getProveedor() {
-        return proveedor;
+    public String getProveedor() {
+        return nitProveedor;
     }
 
-    public void setProveedor(Proveedor proveedor) {
-        this.proveedor = proveedor;
+    public void setProveedor(String nitProveedor) {
+        this.nitProveedor = nitProveedor;
     }
 
     public LocalDateTime getFecha() {
@@ -49,27 +47,19 @@ public class EntradaInventarioDTO {
         this.fecha = fecha;
     }
 
-    public List<ItemEntrada> getItems() {
+    public String getNitProveedor() {
+        return nitProveedor;
+    }
+
+    public void setNitProveedor(String nitProveedor) {
+        this.nitProveedor = nitProveedor;
+    }
+
+    public List<ItemEntradaDTO> getItems() {
         return items;
     }
 
-    public void setItems(List<ItemEntrada> items) {
+    public void setItems(List<ItemEntradaDTO> items) {
         this.items = items;
-    }
-
-    public boolean isConfirmada() {
-        return confirmada;
-    }
-
-    public void setConfirmada(boolean confirmada) {
-        this.confirmada = confirmada;
-    }
-
-    public List<MovimientoInventario> getMovimientosGenerados() {
-        return movimientosGenerados;
-    }
-
-    public void setMovimientosGenerados(List<MovimientoInventario> movimientosGenerados) {
-        this.movimientosGenerados = movimientosGenerados;
     }
 }

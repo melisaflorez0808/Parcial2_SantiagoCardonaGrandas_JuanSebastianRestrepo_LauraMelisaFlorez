@@ -55,7 +55,6 @@ public class ProveedorService {
         return true;
     }
 
-    /*Delete*/
     public boolean eliminarProveedor(String nit) {
         Proveedor proveedor = buscarProvedorEntity(nit);
         if (proveedor == null) {
