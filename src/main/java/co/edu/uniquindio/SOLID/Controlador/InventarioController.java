@@ -1,9 +1,14 @@
 package co.edu.uniquindio.SOLID.Controlador;
 
+import co.edu.uniquindio.SOLID.Model.DTO.ProveedorDTO;
 import co.edu.uniquindio.SOLID.Model.EntradaInventario;
 import co.edu.uniquindio.SOLID.Model.Minimercado;
 import co.edu.uniquindio.SOLID.Model.Producto;
 import co.edu.uniquindio.SOLID.Model.Proveedor;
+import co.edu.uniquindio.SOLID.Service.Fachadas.InventarioFacade;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,7 +20,7 @@ import java.util.ResourceBundle;
 
 public class InventarioController implements Initializable {
 
-    @FXML private ComboBox<Proveedor> cmbProveedores;
+    @FXML private ComboBox<ProveedorDTO> cmbProveedores;
     @FXML private TitledPane tpCrearProveedor;
     @FXML private TextField txtProvNit;
     @FXML private TextField txtProvNombre;
@@ -31,13 +36,16 @@ public class InventarioController implements Initializable {
     @FXML private TableColumn<Producto, Number> colInvPrecio;
     @FXML private TableColumn<Producto, Number> colInvStock;
 
-    private ObservableList<Proveedor> proveedores;
+    private ObservableList<ProveedorDTO> proveedores;
     private ObservableList<Producto> productos;
-    private Minimercado minimercado = Minimercado.getInstancia();
+    private Minimercado minimercado = Minimercado.getInstancia();////SE DEBE QUITAR AL FINAL
+    private InventarioFacade inventarioFacade;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        proveedores = FXCollections.observableArrayList(minimercado.getProveedores());
+        inventarioFacade=new InventarioFacade();
+        proveedores = FXCollections.observableArrayList(inventarioFacade.getProveedores());
         productos = FXCollections.observableArrayList(minimercado.getProductos());
         
         if (cmbProveedores != null) {
@@ -59,10 +67,10 @@ public class InventarioController implements Initializable {
             spnCantidadEntrada.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, 1));
         }
         if (tblProductosInv != null) {
-            colInvSku.setCellValueFactory(cd -> new javafx.beans.property.SimpleStringProperty(cd.getValue().getSku()));
-            colInvNombre.setCellValueFactory(cd -> new javafx.beans.property.SimpleStringProperty(cd.getValue().getNombre()));
-            colInvPrecio.setCellValueFactory(cd -> new javafx.beans.property.SimpleDoubleProperty(cd.getValue().getPrecio()));
-            colInvStock.setCellValueFactory(cd -> new javafx.beans.property.SimpleIntegerProperty(cd.getValue().getStock()));
+            colInvSku.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getSku()));
+            colInvNombre.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getNombre()));
+            colInvPrecio.setCellValueFactory(cd -> new SimpleDoubleProperty(cd.getValue().getPrecio()));
+            colInvStock.setCellValueFactory(cd -> new SimpleIntegerProperty(cd.getValue().getStock()));
             tblProductosInv.setItems(productos);
         }
         if (tpCrearProveedor != null) tpCrearProveedor.setExpanded(false);
@@ -75,12 +83,15 @@ public class InventarioController implements Initializable {
 
     @FXML
     void crearProveedor() {
-        String nit = txtProvNit != null ? txtProvNit.getText() : null;
-        String nombre = txtProvNombre != null ? txtProvNombre.getText() : null;
-        String contacto = txtProvContacto != null ? txtProvContacto.getText() : "";
-        String email = txtProvEmail != null ? txtProvEmail.getText() : "";
-        String telefono = txtProvTelefono != null ? txtProvTelefono.getText() : "";
-        
+
+        ProveedorDTO nuevoProveedor = new ProveedorDTO(
+                txtProvNit.getText().trim(),
+                txtProvNombre.getText().trim(),
+                txtProvContacto.getText().trim(),
+                txtProvEmail.getText().trim(),
+                txtProvTelefono.getText().trim()
+        );
+
         // Validaciones de campos
         if (nit == null || nit.trim().isEmpty()) {
             mostrarError("El NIT es obligatorio");
@@ -92,7 +103,7 @@ public class InventarioController implements Initializable {
         }
         
         try {
-            Proveedor p = minimercado.crearProveedor(nit, nombre, contacto, email, telefono);
+            Proveedor p = inventarioFacade.agregarProveedor(nit, nombre, contacto, email, telefono);
             proveedores.add(p);
             if (cmbProveedores != null) cmbProveedores.getSelectionModel().select(p);
             if (lblResultadoEntrada != null) lblResultadoEntrada.setText("Proveedor creado: " + nombre);

@@ -2,6 +2,7 @@ package co.edu.uniquindio.SOLID.Controlador;
 
 import co.edu.uniquindio.SOLID.Model.DTO.ClienteDTO;
 import co.edu.uniquindio.SOLID.Service.Fachadas.MinimercadoFacade;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -49,13 +50,13 @@ public class ClienteController implements Initializable {
 
     private void configurarTabla() {
         colCedula.setCellValueFactory(cellData -> 
-            new javafx.beans.property.SimpleStringProperty(cellData.getValue().getCedula()));
+            new SimpleStringProperty(cellData.getValue().getCedula()));
         colNombre.setCellValueFactory(cellData -> 
-            new javafx.beans.property.SimpleStringProperty(cellData.getValue().getNombre()));
+            new SimpleStringProperty(cellData.getValue().getNombre()));
         colCorreo.setCellValueFactory(cellData -> 
-            new javafx.beans.property.SimpleStringProperty(cellData.getValue().getCorreo()));
+            new SimpleStringProperty(cellData.getValue().getCorreo()));
         colTelefono.setCellValueFactory(cellData -> 
-            new javafx.beans.property.SimpleStringProperty(cellData.getValue().getTelefono()));
+            new SimpleStringProperty(cellData.getValue().getTelefono()));
         
         tblClientes.setItems(clientes);
     }

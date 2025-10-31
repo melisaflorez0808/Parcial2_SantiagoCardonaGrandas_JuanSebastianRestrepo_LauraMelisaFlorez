@@ -1,6 +1,6 @@
-package co.edu.uniquindio.SOLID.Model;
+package co.edu.uniquindio.SOLID.Model.DTO;
 
-public class Proveedor {
+public class ProveedorDTO {
     private String nit;
     private String nombre;
     private String contacto;
@@ -8,7 +8,7 @@ public class Proveedor {
     private String telefono;
     private boolean activo;
 
-    public Proveedor(String nit, String nombre, String contacto, String email, String telefono) {
+    public ProveedorDTO(String nit, String nombre, String contacto, String email, String telefono) {
         this.nit = nit;
         this.nombre = nombre;
         this.contacto = contacto;
@@ -31,14 +31,4 @@ public class Proveedor {
     public void inactivar() { this.activo = false; }
     public void activar() { this.activo = true; }
 
-    public boolean validarEmail() {
-        return email != null && email.contains("@");
-    }
-
-    @Override
-    public String toString() {
-        return nombre != null ? nombre : (nit != null ? nit : "");
-    }
 }
-
-
