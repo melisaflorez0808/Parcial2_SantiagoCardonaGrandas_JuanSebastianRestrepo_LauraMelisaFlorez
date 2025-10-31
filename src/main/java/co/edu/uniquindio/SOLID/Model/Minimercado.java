@@ -37,6 +37,12 @@ public class Minimercado {
         pedidos.add(pedido);
     }
 
+    public void addEmpleado(Empleado empleado) {
+        empleados.add(empleado);
+    }
+
+    public void addProveedor(Proveedor proveedor) {proveedores.add(proveedor);
+    }
     public void addCliente(Cliente cliente) {
         clientes.add(cliente);
     }
@@ -69,11 +75,6 @@ public class Minimercado {
         movimientos.add(movimiento); 
     }
     
-    public void agregarEmpleado(Empleado empleado) {
-        if (empleado != null) {
-            empleados.add(empleado);
-        }
-    }
 
     public void agregarProveedor(Proveedor proveedor) {
         if (proveedor != null) {
@@ -82,41 +83,7 @@ public class Minimercado {
     }
 
 
-    // --- Empleados ---
-    public Empleado crearEmpleado(String id, String nombre, String rolStr) {
-        if (buscarEmpleado(id) != null) {
-            throw new IllegalArgumentException("Ya existe un empleado con ese ID");
-        }
-        Empleado empleado = new Empleado(id, nombre, Empleado.Rol.valueOf(rolStr));
-        empleados.add(empleado);
-        return empleado;
-    }
 
-    public Empleado buscarEmpleado(String id) {
-        for (Empleado e : empleados) {
-            if (e.getId().equals(id)) return e; 
-        }
-        return null;
-    }
-
-    public Empleado actualizarEmpleado(String id, String nombre, String rolStr, Boolean activo) {
-        Empleado e = buscarEmpleado(id);
-        if (e == null) {
-            throw new IllegalArgumentException("Empleado no encontrado: " + id);
-        }
-        if (nombre != null) e.setNombre(nombre);
-        if (rolStr != null) e.setRol(Empleado.Rol.valueOf(rolStr));
-        if (activo != null) { if (activo) e.activar(); else e.inactivar(); }
-        return e;
-    }
-
-    public void eliminarEmpleado(String id) {
-        Empleado e = buscarEmpleado(id);
-        if (e == null) {
-            throw new IllegalArgumentException("Empleado no encontrado: " + id);
-        }
-        empleados.remove(e);
-    }
 
     // --- Proveedores ---
     public Proveedor crearProveedor(String nit, String nombre, String contacto, String email, String telefono) {
