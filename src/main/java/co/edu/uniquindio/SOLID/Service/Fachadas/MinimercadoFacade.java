@@ -1,10 +1,9 @@
 package co.edu.uniquindio.SOLID.Service.Fachadas;
-
 import co.edu.uniquindio.SOLID.Model.DTO.*;
 import co.edu.uniquindio.SOLID.Service.ClienteService;
 import co.edu.uniquindio.SOLID.Service.ProductoService;
 import co.edu.uniquindio.SOLID.Service.PedidoService;
-import co.edu.uniquindio.SOLID.Service.CatalogoProductosService;
+
 
 import java.util.List;
 
@@ -21,8 +20,7 @@ public class MinimercadoFacade {
     public MinimercadoFacade() {
         this.clienteService = new ClienteService();
         this.productoService = new ProductoService();
-        CatalogoProductosService catalogoProductosService = new CatalogoProductosService();
-        this.pedidoService = new PedidoService(catalogoProductosService);
+        this.pedidoService = new PedidoService();
     }
     
     // ========== DELEGACIÓN SIMPLE A SERVICIOS ==========

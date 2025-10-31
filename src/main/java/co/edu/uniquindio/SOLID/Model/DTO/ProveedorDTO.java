@@ -25,7 +25,6 @@ public class ProveedorDTO {
     public boolean isActivo() { return activo; }
 
     public void setNombre(String nombre) { this.nombre = nombre; }
-    public void setContacto(String contacto) { this.contacto = contacto; }
     public void setEmail(String email) { this.email = email; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
     public void inactivar() { this.activo = false; }

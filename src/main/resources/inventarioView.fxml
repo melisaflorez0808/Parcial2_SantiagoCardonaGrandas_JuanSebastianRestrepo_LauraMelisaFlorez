@@ -62,6 +62,7 @@
       </children>
     </HBox>
     <Label fx:id="lblResultadoEntrada" text="" />
+      <Button fx:id="btnInventario" mnemonicParsing="false" onAction="#actualizarInventario" text="Actualizar Estado Inventario" />
       <Label fx:id="lblMensaje" prefHeight="18.0" prefWidth="261.0" />
 
     <TitledPane expanded="true" text="Productos en Inventario">

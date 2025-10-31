@@ -1,7 +1,5 @@
 package co.edu.uniquindio.SOLID.Model.DTO;
-
 import co.edu.uniquindio.SOLID.Model.MovimientoInventario;
-import co.edu.uniquindio.SOLID.Model.Producto;
 
 import java.time.LocalDateTime;
 

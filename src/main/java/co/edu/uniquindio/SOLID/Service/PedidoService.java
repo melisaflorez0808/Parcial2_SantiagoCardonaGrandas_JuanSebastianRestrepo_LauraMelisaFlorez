@@ -1,5 +1,4 @@
 package co.edu.uniquindio.SOLID.Service;
-
 import co.edu.uniquindio.SOLID.Model.*;
 import co.edu.uniquindio.SOLID.Model.DTO.ItemPedidoDTO;
 import co.edu.uniquindio.SOLID.Model.DTO.PedidoDTO;
@@ -15,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PedidoService {
-    CatalogoProductosService catalogoProductosService;
+    ProductoService productoService;
     ClienteService clienteService;
 
-    public PedidoService(CatalogoProductosService catalogoProductosService) {
-        this.catalogoProductosService = catalogoProductosService;
+    public PedidoService() {
+        this.productoService = new ProductoService();
         this.clienteService = new ClienteService();
     }
 
@@ -28,7 +27,7 @@ public class PedidoService {
         List<ItemPedido> items = new ArrayList<ItemPedido>();
 
         for (ItemPedidoDTO item : pedidoDTO.itemsPedido) {
-            Producto producto = catalogoProductosService.buscarProducto(item.skuProducto);
+            Producto producto = productoService.buscarProductoEntity(item.skuProducto);
             if (producto != null) {
                 ItemPedido itemPedido = new ItemPedido(producto, item.cantidad);
                 items.add(itemPedido);
@@ -118,7 +117,7 @@ public class PedidoService {
     public double calcularSubtotal(List<ItemPedidoDTO> items) {
         double subtotal = 0;
         for (ItemPedidoDTO item : items) {
-            Producto producto = catalogoProductosService.buscarProducto(item.skuProducto);
+            Producto producto = productoService.buscarProductoEntity(item.skuProducto);
             if (producto != null) {
                 subtotal += producto.getPrecio() * item.cantidad;
             }

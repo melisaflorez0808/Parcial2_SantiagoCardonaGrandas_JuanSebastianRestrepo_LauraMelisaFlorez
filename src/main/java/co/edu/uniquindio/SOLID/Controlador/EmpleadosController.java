@@ -190,7 +190,7 @@ public class EmpleadosController implements Initializable {
             EmpleadoDTO empleadoDTO = empleadoSeleccionado; //Traigo la selección
             if(empresaAdminFacade.buscarEmpleadoPorCedula(empleadoDTO.getId()) != null){
                 empresaAdminFacade.activarEmpleado(empleadoDTO);
-                empleadoDTO.setActivo(true); //Si lo halló lo activé en la lista de minimercado, activo DTO que es el que estoy mostrando en pantalla
+                empleadoDTO.setActivo(true);
                 tblEmpleados.refresh();
             }
         } catch (IllegalArgumentException e) { mostrarMensaje(e.getMessage()); }
@@ -202,12 +202,10 @@ public class EmpleadosController implements Initializable {
             EmpleadoDTO empleadoDTO = empleadoSeleccionado; //Traigo la selección
             if(empresaAdminFacade.buscarEmpleadoPorCedula(empleadoDTO.getId()) != null) {
                 empresaAdminFacade.inactivarEmpleado(empleadoDTO);
-                cargarEmpleados(); //U otra opción en cargar de nuevo los empleado que directamente accede a la base de datos que ya actualicé (esta me gusta más)
+                cargarEmpleados();
             }
         } catch (IllegalArgumentException e) { mostrarMensaje(e.getMessage()); }
     }
-
-
 }
 
 

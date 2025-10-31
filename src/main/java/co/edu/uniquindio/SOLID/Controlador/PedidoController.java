@@ -218,7 +218,6 @@ public class PedidoController implements Initializable {
                 return;
             }
 
-            // Crear DTO del pedido
             PedidoDTO pedidoDTO = new PedidoDTO();
             pedidoDTO.codigo = "PED-" + System.currentTimeMillis();
             pedidoDTO.idCliente = cmbClientes.getValue().getCedula();
@@ -226,16 +225,13 @@ public class PedidoController implements Initializable {
             pedidoDTO.direccionEnvio = txtDireccionEnvio.getText();
             pedidoDTO.notas = txtNotas.getText();
             pedidoDTO.codigoDescuento = txtCodigoDescuento.getText();
-            
-            // Procesar pedido usando el Facade
+
             ResumenPedidoDTO resultado = minimercadoFacade.procesarPedido(pedidoDTO);
-            
-            // Calcular totales
+
             double subtotal = calcularSubtotal();
             double costoEnvio = calcularCostoEnvio();
             double total = minimercadoFacade.calcularTotal(subtotal, costoEnvio);
-            
-            // Mostrar resultado
+
             txtResultado.setText(
                 "PEDIDO PROCESADO EXITOSAMENTE\n\n" +
                 "Código: " + resultado.codigo + "\n" +
@@ -249,12 +245,9 @@ public class PedidoController implements Initializable {
             );
             
             System.out.println("Pedido procesado exitosamente: " + resultado.codigo);
-            
-            // Limpiar formulario después de procesar
             limpiarFormulario(event);
             
         } catch (IllegalArgumentException e) {
-            // Errores de negocio (por ejemplo, stock insuficiente)
             mostrarError(e.getMessage());
             txtResultado.setText("");
         } catch (Exception e) {
@@ -317,7 +310,6 @@ public class PedidoController implements Initializable {
             productoStage.setTitle("Sistema Quindío Fresh - Gestión de Productos");
             productoStage.setScene(new Scene(root, 800, 600));
             
-            // Agregar listener para recargar productos cuando se cierre la ventana
             productoStage.setOnHidden(e -> {
                 cargarProductos();
                 System.out.println("Productos recargados después de cerrar ventana");

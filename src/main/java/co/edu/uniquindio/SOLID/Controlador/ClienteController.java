@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -22,17 +21,14 @@ public class ClienteController implements Initializable {
     @FXML private TableColumn<ClienteDTO, String> colNombre;
     @FXML private TableColumn<ClienteDTO, String> colCorreo;
     @FXML private TableColumn<ClienteDTO, String> colTelefono;
-    
     @FXML private TextField txtCedula;
     @FXML private TextField txtNombre;
     @FXML private TextField txtCorreo;
     @FXML private TextField txtTelefono;
-    
     @FXML private Button btnAgregar;
     @FXML private Button btnActualizar;
     @FXML private Button btnEliminar;
     @FXML private Button btnLimpiar;
-    
     @FXML private Label lblMensaje;
 
     private MinimercadoFacade minimercadoFacade;

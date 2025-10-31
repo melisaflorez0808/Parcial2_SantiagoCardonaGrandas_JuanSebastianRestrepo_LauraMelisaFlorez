@@ -42,6 +42,7 @@ public class InventarioController implements Initializable {
     @FXML private TableColumn<ProductoDTO, Number> colInvPrecio;
     @FXML private TableColumn<ProductoDTO, Number> colInvStock;
     @FXML private Label lblMensaje;
+    @FXML private Button btnInventario;
 
     private ObservableList<ProveedorDTO> proveedores;
 
@@ -114,7 +115,6 @@ public class InventarioController implements Initializable {
 
         proveedorSeleccionado = null;
         cmbProveedores.getSelectionModel().clearSelection();
-
         mostrarMensaje("Formulario limpio - Listo para nuevo cliente", false);
     }
 
@@ -286,26 +286,19 @@ public class InventarioController implements Initializable {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
-
-    private void configurarTablaProductos() {
-        colInvSku.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getSku()));
-        colInvNombre.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getNombre()));
-        colInvPrecio.setCellValueFactory(cd -> new SimpleDoubleProperty(cd.getValue().getPrecio()));
-        colInvStock.setCellValueFactory(cd -> new SimpleIntegerProperty(cd.getValue().getStock()));
-        tblProductosInv.setItems(productos);
-    }
-
+    
     public void cargarProductosEnTabla() {
         Platform.runLater(() -> {
             productos.clear();
             productos.addAll(minimercadoFacade.obtenerTodosLosProductos());
             tblProductosInv.setItems(productos);
             tblProductosInv.refresh();
-
-            for (ProductoDTO p : productos) {
-                System.out.println("SKU: " + p.getSku() + ", Stock: " + p.getStock());
-            }
         });
+    }
+
+    @FXML
+    void actualizarInventario(ActionEvent event) {
+        cargarProductosEnTabla();
     }
 }
 

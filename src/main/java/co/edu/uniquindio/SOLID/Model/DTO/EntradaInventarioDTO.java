@@ -33,28 +33,8 @@ public class EntradaInventarioDTO {
         this.id = id;
     }
 
-    public String getProveedor() {
-        return nitProveedor;
-    }
-
-    public void setProveedor(String nitProveedor) {
-        this.nitProveedor = nitProveedor;
-    }
-
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
-    }
-
     public String getNitProveedor() {
         return nitProveedor;
-    }
-
-    public void setNitProveedor(String nitProveedor) {
-        this.nitProveedor = nitProveedor;
     }
 
     public List<ItemEntradaDTO> getItems() {
