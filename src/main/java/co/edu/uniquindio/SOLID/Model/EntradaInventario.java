@@ -1,18 +1,20 @@
 package co.edu.uniquindio.SOLID.Model;
 
+import co.edu.uniquindio.SOLID.Model.DTO.ProveedorDTO;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EntradaInventario {
     private String id;
-    private Proveedor proveedor;
+    private ProveedorDTO proveedor;
     private LocalDateTime fecha;
     private List<ItemEntrada> items;
     private boolean confirmada;
     private List<MovimientoInventario> movimientosGenerados;
 
-    public EntradaInventario(String id, Proveedor proveedor) {
+    public EntradaInventario(String id, ProveedorDTO proveedor) {
         this.id = id;
         this.proveedor = proveedor;
         this.fecha = LocalDateTime.now();
@@ -22,7 +24,7 @@ public class EntradaInventario {
     }
 
     public String getId() { return id; }
-    public Proveedor getProveedor() { return proveedor; }
+    public ProveedorDTO getProveedor() { return proveedor; }
     public LocalDateTime getFecha() { return fecha; }
     public List<ItemEntrada> getItems() { return items; }
     public boolean isConfirmada() { return confirmada; }

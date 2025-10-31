@@ -1,5 +1,6 @@
 package co.edu.uniquindio.SOLID.Controlador;
 
+import co.edu.uniquindio.SOLID.Model.DTO.ClienteDTO;
 import co.edu.uniquindio.SOLID.Model.DTO.ProveedorDTO;
 import co.edu.uniquindio.SOLID.Model.EntradaInventario;
 import co.edu.uniquindio.SOLID.Model.Minimercado;
@@ -11,10 +12,12 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
+import javax.swing.text.StyledEditorKit;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -40,6 +43,7 @@ public class InventarioController implements Initializable {
     private ObservableList<Producto> productos;
     private Minimercado minimercado = Minimercado.getInstancia();////SE DEBE QUITAR AL FINAL
     private InventarioFacade inventarioFacade;
+    private ProveedorDTO proveedorDTO;
 
 
     @Override
@@ -83,6 +87,9 @@ public class InventarioController implements Initializable {
 
     @FXML
     void crearProveedor() {
+        if (!validarCamposProveedor()) {
+            return;
+        }
 
         ProveedorDTO nuevoProveedor = new ProveedorDTO(
                 txtProvNit.getText().trim(),
@@ -92,21 +99,11 @@ public class InventarioController implements Initializable {
                 txtProvTelefono.getText().trim()
         );
 
-        // Validaciones de campos
-        if (nit == null || nit.trim().isEmpty()) {
-            mostrarError("El NIT es obligatorio");
-            return;
-        }
-        if (nombre == null || nombre.trim().isEmpty()) {
-            mostrarError("El nombre es obligatorio");
-            return;
-        }
-        
         try {
-            Proveedor p = inventarioFacade.agregarProveedor(nit, nombre, contacto, email, telefono);
-            proveedores.add(p);
-            if (cmbProveedores != null) cmbProveedores.getSelectionModel().select(p);
-            if (lblResultadoEntrada != null) lblResultadoEntrada.setText("Proveedor creado: " + nombre);
+            inventarioFacade.agregarProveedor(nuevoProveedor);
+            if (cmbProveedores != null) cmbProveedores.getSelectionModel().select(nuevoProveedor);
+            if (lblResultadoEntrada != null)
+                lblResultadoEntrada.setText("Proveedor creado: " + nuevoProveedor.getNombre());
             if (tpCrearProveedor != null) tpCrearProveedor.setExpanded(false);
             if (txtProvNit != null) txtProvNit.clear();
             if (txtProvNombre != null) txtProvNombre.clear();
@@ -118,18 +115,51 @@ public class InventarioController implements Initializable {
         }
     }
 
+
+    private boolean validarCamposProveedor() {
+        if (txtProvNit.getText().trim().isEmpty()) {
+            mostrarError("El nit  es obligatorio");
+            return false;
+        }
+
+        if (txtProvNombre.getText().trim().isEmpty()) {
+            mostrarError("El nombre es obligatorio");
+            return false;
+        }
+
+        if (txtProvContacto.getText().trim().isEmpty()) {
+            mostrarError("El contacto es obligatorio");
+            return false;
+        }
+
+        if (txtProvTelefono.getText().trim().isEmpty()) {
+            mostrarError("El teléfono es obligatorio");
+            return false;
+        }
+
+        String correo = txtProvEmail.getText().trim();
+        if (!correo.contains("@") || !correo.contains(".")) {
+            mostrarError("El formato del correo no es válido");
+            return false;
+        }
+
+        return true;
+    }
+
     @FXML
     void actualizarProveedor() {
+
         String nit = txtProvNit != null ? txtProvNit.getText() : null;
         String nombre = txtProvNombre != null ? txtProvNombre.getText() : null;
         String contacto = txtProvContacto != null ? txtProvContacto.getText() : null;
         String email = txtProvEmail != null ? txtProvEmail.getText() : null;
         String telefono = txtProvTelefono != null ? txtProvTelefono.getText() : null;
+        ProveedorDTO proveedorDTO = new ProveedorDTO(nit, nombre, contacto, email, telefono);
         if (nit == null || nit.trim().isEmpty()) { mostrarError("El NIT es obligatorio"); return; }
         try {
-            Proveedor actualizado = minimercado.actualizarProveedor(nit, nombre, contacto, email, telefono, null);
+            inventarioFacade.actualizarProveedor(proveedorDTO);
             for (int i = 0; i < proveedores.size(); i++) {
-                if (proveedores.get(i).getNit().equals(nit)) { proveedores.set(i, actualizado); break; }
+                if (proveedores.get(i).getNit().equals(nit)) { proveedores.set(i, proveedorDTO); break; }
             }
             if (cmbProveedores != null) cmbProveedores.setItems(FXCollections.observableArrayList(proveedores));
         } catch (IllegalArgumentException e) { mostrarError(e.getMessage()); }
@@ -140,7 +170,7 @@ public class InventarioController implements Initializable {
         String nit = txtProvNit != null ? txtProvNit.getText() : null;
         if (nit == null || nit.trim().isEmpty()) { mostrarError("El NIT es obligatorio"); return; }
         try {
-            minimercado.eliminarProveedor(nit);
+            inventarioFacade.eliminarProveedor(nit);
             proveedores.removeIf(p -> p.getNit().equals(nit));
             if (cmbProveedores != null) cmbProveedores.setItems(FXCollections.observableArrayList(proveedores));
         } catch (IllegalArgumentException e) { mostrarError(e.getMessage()); }
@@ -151,8 +181,8 @@ public class InventarioController implements Initializable {
         String nit = txtProvNit != null ? txtProvNit.getText() : null;
         if (nit == null || nit.trim().isEmpty()) { mostrarError("El NIT es obligatorio"); return; }
         try {
-            Proveedor actualizado = minimercado.actualizarProveedor(nit, null, null, null, null, true);
-            for (int i = 0; i < proveedores.size(); i++) { if (proveedores.get(i).getNit().equals(nit)) { proveedores.set(i, actualizado); break; } }
+            ProveedorDTO proveedorDTO=inventarioFacade.buscarProveedorDTO(nit);
+            inventarioFacade.activarProveedor(proveedorDTO);
             if (cmbProveedores != null) cmbProveedores.setItems(FXCollections.observableArrayList(proveedores));
         } catch (IllegalArgumentException e) { mostrarError(e.getMessage()); }
     }
@@ -162,20 +192,20 @@ public class InventarioController implements Initializable {
         String nit = txtProvNit != null ? txtProvNit.getText() : null;
         if (nit == null || nit.trim().isEmpty()) { mostrarError("El NIT es obligatorio"); return; }
         try {
-            Proveedor actualizado = minimercado.actualizarProveedor(nit, null, null, null, null, false);
-            for (int i = 0; i < proveedores.size(); i++) { if (proveedores.get(i).getNit().equals(nit)) { proveedores.set(i, actualizado); break; } }
+            ProveedorDTO proveedorDTO=inventarioFacade.buscarProveedorDTO(nit);
+            inventarioFacade.inactivarProveedor(proveedorDTO);
             if (cmbProveedores != null) cmbProveedores.setItems(FXCollections.observableArrayList(proveedores));
         } catch (IllegalArgumentException e) { mostrarError(e.getMessage()); }
     }
 
     @FXML
     void confirmarEntradaInventario() {
-        Proveedor proveedor = cmbProveedores != null ? cmbProveedores.getValue() : null;
+        ProveedorDTO proveedorDTO = cmbProveedores != null ? cmbProveedores.getValue() : null;
         Producto prod = cmbProductoEntrada != null ? cmbProductoEntrada.getValue() : null;
         Integer cant = spnCantidadEntrada != null ? spnCantidadEntrada.getValue() : 0;
         
         // Validaciones de campos
-        if (proveedor == null) {
+        if (proveedorDTO == null) {
             mostrarError("Seleccione un proveedor");
             return;
         }
@@ -189,7 +219,7 @@ public class InventarioController implements Initializable {
         }
         
         try {
-            minimercado.registrarEntradaInventario(proveedor, prod, cant);
+            minimercado.registrarEntradaInventario(proveedorDTO, prod, cant);
             if (lblResultadoEntrada != null) lblResultadoEntrada.setText("Entrada confirmada. Stock " + prod.getSku() + ": " + prod.getStock());
             if (tblProductosInv != null) tblProductosInv.refresh();
         } catch (IllegalArgumentException e) {
