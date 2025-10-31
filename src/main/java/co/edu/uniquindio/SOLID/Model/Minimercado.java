@@ -43,7 +43,8 @@ public class Minimercado {
         empleados.add(empleado);
     }
 
-    public void addProveedor(Proveedor proveedor) {proveedores.add(proveedor);
+    public void addProveedor(Proveedor proveedor) {
+        proveedores.add(proveedor);
     }
     public void addCliente(Cliente cliente) {
         clientes.add(cliente);
