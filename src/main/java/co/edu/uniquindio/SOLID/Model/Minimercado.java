@@ -76,13 +76,6 @@ public class Minimercado {
     public void registrarMovimiento(MovimientoInventario movimiento) { 
         movimientos.add(movimiento); 
     }
-    
-
-    public void agregarProveedor(Proveedor proveedor) {
-        if (proveedor != null) {
-            proveedores.add(proveedor);
-        }
-    }
 
     // Nota: la confirmación y registro de movimientos se hace en EntradaInventario.confirmar()
     public EntradaInventario registrarEntradaInventario(ProveedorDTO proveedor, Producto producto, int cantidad) {

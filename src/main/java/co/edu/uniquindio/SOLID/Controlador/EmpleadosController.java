@@ -26,6 +26,7 @@ public class EmpleadosController implements Initializable {
     @FXML private TableColumn<EmpleadoDTO, String> colEmpNombre;
     @FXML private TableColumn<EmpleadoDTO, String> colEmpRol;
     @FXML private TableColumn<EmpleadoDTO, String> colEmpEstado;
+    @FXML private Label mensaje;
 
     private ObservableList<EmpleadoDTO> empleados;
     private EmpleadoFacade empleadoFacade;
@@ -78,15 +79,9 @@ public class EmpleadosController implements Initializable {
         mostrarMensaje("Clientes cargados: " + empleados.size());
     }
 
-    private void mostrarMensaje(String mensaje){
-        System.out.println(mensaje);
-    }
-
-    public void configurarCamposRol() {
-        if (cmbEmpRol != null) {
-            cmbEmpRol.setItems(FXCollections.observableArrayList(Empleado.Rol.values()));
-            cmbEmpRol.setValue(Empleado.Rol.CAJERO);
-        }
+    private void mostrarMensaje(String msg){
+        System.out.println(msg);
+        mensaje.setText(msg);
     }
 
     @FXML
@@ -197,7 +192,7 @@ public class EmpleadosController implements Initializable {
             EmpleadoDTO empleadoDTO = empleadoSeleccionado; //Traigo la selección
             if(empleadoFacade.buscarEmpleadoPorCedula(empleadoDTO.getId()) != null){
                 empleadoFacade.activarEmpleado(empleadoDTO);
-                empleadoDTO.setActivo(true);
+                empleadoDTO.setActivo(true); //Si lo halló lo activé en la lista de minimercado, activo DTO que es el que estoy mostrando en pantalla
                 tblEmpleados.refresh();
             }
         } catch (IllegalArgumentException e) { mostrarMensaje(e.getMessage()); }
@@ -209,8 +204,7 @@ public class EmpleadosController implements Initializable {
             EmpleadoDTO empleadoDTO = empleadoSeleccionado; //Traigo la selección
             if(empleadoFacade.buscarEmpleadoPorCedula(empleadoDTO.getId()) != null) {
                 empleadoFacade.inactivarEmpleado(empleadoDTO);
-                empleadoDTO.setActivo(false);
-                tblEmpleados.refresh();
+                cargarEmpleados(); //U otra opción en cargar de nuevo los empleado que directamente accede a la base de datos que ya actualicé (esta me gusta más)
             }
         } catch (IllegalArgumentException e) { mostrarMensaje(e.getMessage()); }
     }

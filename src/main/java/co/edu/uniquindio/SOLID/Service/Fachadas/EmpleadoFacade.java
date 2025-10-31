@@ -42,8 +42,5 @@ public class EmpleadoFacade {
     public boolean eliminarEmpleado(String id) {
         return empleadoService.eliminarEmpleado(id);
     }
-
-    public boolean existeEmpleado(String id) {
-        return empleadoService.existeEmpleado(id);
-    }
+    
 }

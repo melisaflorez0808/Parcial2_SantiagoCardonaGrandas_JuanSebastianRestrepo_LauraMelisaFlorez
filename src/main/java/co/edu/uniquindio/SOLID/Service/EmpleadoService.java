@@ -19,6 +19,19 @@ public class EmpleadoService {
         this.minimercado = Minimercado.getInstancia();
     }
 
+    public List<EmpleadoDTO> obtenerTodosLosEmpleados() {
+        List<EmpleadoDTO> empleadosDTO = new ArrayList<>();
+        for (Empleado empleado : minimercado.getEmpleados()) {
+            empleadosDTO.add(EmpleadoMapper.toDTO(empleado));
+        }
+        return empleadosDTO;
+    }
+
+    public EmpleadoDTO buscarEmpleadoPorCedula(String cedula) {
+        Empleado empleado = buscarEmpleadoEntity(cedula);
+        return empleado != null ? EmpleadoMapper.toDTO(empleado) : null;
+    }
+
     public boolean agregarEmpleado(EmpleadoDTO empleadoDTO) {
         if (buscarEmpleadoEntity(empleadoDTO.getId()) != null) {
             return false;
@@ -28,20 +41,6 @@ public class EmpleadoService {
         return true;
     }
 
-    public Empleado buscarEmpleadoEntity(String cedula) {
-        for (Empleado empleado : minimercado.getEmpleados()) {
-            if (empleado.getId().equals(cedula)) {
-                return empleado;
-            }
-        }
-        return null;
-    }
-
-    public EmpleadoDTO buscarEmpleadoPorCedula(String cedula) {
-        Empleado empleado = buscarEmpleadoEntity(cedula);
-        return empleado != null ? EmpleadoMapper.toDTO(empleado) : null;
-    }
-
     public boolean actualizarEmpleado(EmpleadoDTO empleadoDTO) {
         Empleado empleado = buscarEmpleadoEntity(empleadoDTO.getId());
         if (empleado == null) {
@@ -49,6 +48,28 @@ public class EmpleadoService {
         }
         EmpleadoMapper.updateEntityFromDTO(empleado, empleadoDTO);
         return true;
+    }
+
+    public boolean eliminarEmpleado(String id) {
+        Empleado empleado = buscarEmpleadoEntity(id);
+        if (empleado == null) {
+            return false;
+        }
+        minimercado.getEmpleados().remove(empleado);
+        return true;
+    }
+
+    public boolean existeEmpleado(String id) {
+        return buscarEmpleadoEntity(id) != null;
+    }
+
+    public Empleado buscarEmpleadoEntity(String cedula) {
+        for (Empleado empleado : minimercado.getEmpleados()) {
+            if (empleado.getId().equals(cedula)) {
+                return empleado;
+            }
+        }
+        return null;
     }
 
     public boolean inactivarEmpleado(EmpleadoDTO empleadoDTO) {
@@ -69,25 +90,5 @@ public class EmpleadoService {
         return true;
     }
 
-    public boolean eliminarEmpleado(String id) {
-        Empleado empleado = buscarEmpleadoEntity(id);
-        if (empleado == null) {
-            return false;
-        }
-        minimercado.getEmpleados().remove(empleado);
-        return true;
-    }
-
-    public List<EmpleadoDTO> obtenerTodosLosEmpleados() {
-        List<EmpleadoDTO> empleadosDTO = new ArrayList<>();
-        for (Empleado empleado : minimercado.getEmpleados()) {
-            empleadosDTO.add(EmpleadoMapper.toDTO(empleado));
-        }
-        return empleadosDTO;
-    }
-
-    public boolean existeEmpleado(String id) {
-        return buscarEmpleadoEntity(id) != null;
-    }
 
 }

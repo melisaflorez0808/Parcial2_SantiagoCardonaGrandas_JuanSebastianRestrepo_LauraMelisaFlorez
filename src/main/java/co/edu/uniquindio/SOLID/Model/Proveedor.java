@@ -31,7 +31,6 @@ public class Proveedor {
     public void activar() { this.activo = true; }
     public void desactivar(){ this.activo = false; }
 
-
     @Override
     public String toString() {
         return nombre != null ? nombre : (nit != null ? nit : "");

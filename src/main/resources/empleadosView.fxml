@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.SOLID.Controlador.EmpleadosController" spacing="10.0">
+<VBox prefHeight="337.0" prefWidth="828.0" spacing="10.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.SOLID.Controlador.EmpleadosController">
   <padding>
     <Insets topRightBottomLeft="10.0" />
   </padding>
   <children>
-    <Label text="Gestión de Empleados" />
     <HBox spacing="10.0">
       <children>
         <TextField fx:id="txtEmpId" promptText="ID" />
@@ -24,13 +29,12 @@
     </HBox>
     <TableView fx:id="tblEmpleados" prefHeight="250.0">
       <columns>
-        <TableColumn fx:id="colEmpId" text="ID" prefWidth="120.0" />
-        <TableColumn fx:id="colEmpNombre" text="Nombre" prefWidth="200.0" />
-        <TableColumn fx:id="colEmpRol" text="Rol" prefWidth="120.0" />
-        <TableColumn fx:id="colEmpEstado" text="Estado" prefWidth="120.0" />
+        <TableColumn fx:id="colEmpId" prefWidth="120.0" text="ID" />
+        <TableColumn fx:id="colEmpNombre" prefWidth="200.0" text="Nombre" />
+        <TableColumn fx:id="colEmpRol" prefWidth="120.0" text="Rol" />
+        <TableColumn fx:id="colEmpEstado" prefWidth="120.0" text="Estado" />
       </columns>
     </TableView>
+    <Label fx:id="mensaje" />
   </children>
 </VBox>
-
-

@@ -20,10 +20,6 @@ public class ItemPedido {
     public int getCantidad() {
         return cantidad;
     }
-    
-    public double calcularSubtotal() {
-        return producto.getPrecio() * cantidad;
-    }
 
     @Override
     public String toString() {
