@@ -106,10 +106,8 @@ public class ClienteController implements Initializable {
             } else {
                 mostrarMensaje("Error: Ya existe un cliente con la cédula " + nuevoCliente.getCedula(), true);
             }
-            
         } catch (Exception e) {
             mostrarMensaje("Error al agregar cliente: " + e.getMessage(), true);
-            e.printStackTrace();
         }
     }
 
@@ -121,7 +119,7 @@ public class ClienteController implements Initializable {
                 return;
             }
             
-            if (!validarCampos()) {
+            if (validarCampos()) {
                 return;
             }
             

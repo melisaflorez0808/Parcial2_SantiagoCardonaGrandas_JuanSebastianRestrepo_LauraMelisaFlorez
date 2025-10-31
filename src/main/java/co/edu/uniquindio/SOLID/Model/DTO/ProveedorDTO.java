@@ -31,4 +31,9 @@ public class ProveedorDTO {
     public void inactivar() { this.activo = false; }
     public void activar() { this.activo = true; }
 
+    @Override
+    public String toString() {
+        return "Proveedor "+ nombre +
+                " NIT='" + nit + '\'';
+    }
 }

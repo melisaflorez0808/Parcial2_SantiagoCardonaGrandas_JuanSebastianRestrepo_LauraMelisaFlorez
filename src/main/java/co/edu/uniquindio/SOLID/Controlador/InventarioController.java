@@ -38,12 +38,13 @@ public class InventarioController implements Initializable {
     @FXML private TableColumn<Producto, String> colInvNombre;
     @FXML private TableColumn<Producto, Number> colInvPrecio;
     @FXML private TableColumn<Producto, Number> colInvStock;
+    @FXML private Label lblMensaje;
 
     private ObservableList<ProveedorDTO> proveedores;
     private ObservableList<Producto> productos;
     private Minimercado minimercado = Minimercado.getInstancia();////SE DEBE QUITAR AL FINAL
     private InventarioFacade inventarioFacade;
-    private ProveedorDTO proveedorDTO;
+    private ProveedorDTO proveedorSeleccionado;
 
 
     @Override
@@ -51,19 +52,8 @@ public class InventarioController implements Initializable {
         inventarioFacade=new InventarioFacade();
         proveedores = FXCollections.observableArrayList(inventarioFacade.getProveedores());
         productos = FXCollections.observableArrayList(minimercado.getProductos());
-        
-        if (cmbProveedores != null) {
-            cmbProveedores.setItems(proveedores);
-            cmbProveedores.getSelectionModel().selectedItemProperty().addListener((obs, anterior, seleccionado) -> {
-                if (seleccionado != null) {
-                    if (txtProvNit != null) txtProvNit.setText(seleccionado.getNit());
-                    if (txtProvNombre != null) txtProvNombre.setText(seleccionado.getNombre());
-                    if (txtProvContacto != null) txtProvContacto.setText(seleccionado.getContacto());
-                    if (txtProvEmail != null) txtProvEmail.setText(seleccionado.getEmail());
-                    if (txtProvTelefono != null) txtProvTelefono.setText(seleccionado.getTelefono());
-                }
-            });
-        }
+        cargarProveedores();
+        configurarSeleccionListaProveedores();
         if (cmbProductoEntrada != null) {
             cmbProductoEntrada.setItems(productos);
         }
@@ -80,41 +70,82 @@ public class InventarioController implements Initializable {
         if (tpCrearProveedor != null) tpCrearProveedor.setExpanded(false);
     }
 
+    private void cargarProveedores() {
+        proveedores.clear();
+        proveedores.addAll(inventarioFacade.getProveedores());
+        if (cmbProveedores != null) {
+            cmbProveedores.setItems(proveedores);
+        }
+
+        mostrarMensaje("Proveedores cargados: " + proveedores.size(), false);
+    }
+
+    private void configurarSeleccionListaProveedores() {
+        cmbProveedores.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                proveedorSeleccionado = newSelection;
+                cargarDatosEnFormulario(newSelection);
+            }
+        });
+    }
+
+    private void cargarDatosEnFormulario(ProveedorDTO proveedor) {
+        txtProvNit.setText(proveedor.getNit());
+        txtProvNit.setDisable(true);
+        txtProvNombre.setText(proveedor.getNombre());
+        txtProvNombre.setDisable(true);
+        txtProvContacto.setText(proveedor.getContacto());
+        txtProvEmail.setText(proveedor.getEmail());
+        txtProvTelefono.setText(proveedor.getTelefono());
+    }
+
+    void limpiarFormulario() {
+        txtProvNit.clear();
+        txtProvNit.setDisable(false);
+        txtProvNombre.clear();
+        txtProvNombre.setDisable(false);
+        txtProvContacto.clear();
+        txtProvEmail.clear();
+        txtProvTelefono.clear();
+
+        proveedorSeleccionado = null;
+        cmbProveedores.getSelectionModel().clearSelection();
+
+        mostrarMensaje("Formulario limpio - Listo para nuevo cliente", false);
+    }
+
     @FXML
     void mostrarCrearProveedor() {
         if (tpCrearProveedor != null) tpCrearProveedor.setExpanded(!tpCrearProveedor.isExpanded());
+        limpiarFormulario();
     }
 
     @FXML
     void crearProveedor() {
-        if (!validarCamposProveedor()) {
-            return;
-        }
-
-        ProveedorDTO nuevoProveedor = new ProveedorDTO(
-                txtProvNit.getText().trim(),
-                txtProvNombre.getText().trim(),
-                txtProvContacto.getText().trim(),
-                txtProvEmail.getText().trim(),
-                txtProvTelefono.getText().trim()
-        );
-
         try {
-            inventarioFacade.agregarProveedor(nuevoProveedor);
-            if (cmbProveedores != null) cmbProveedores.getSelectionModel().select(nuevoProveedor);
-            if (lblResultadoEntrada != null)
-                lblResultadoEntrada.setText("Proveedor creado: " + nuevoProveedor.getNombre());
-            if (tpCrearProveedor != null) tpCrearProveedor.setExpanded(false);
-            if (txtProvNit != null) txtProvNit.clear();
-            if (txtProvNombre != null) txtProvNombre.clear();
-            if (txtProvContacto != null) txtProvContacto.clear();
-            if (txtProvEmail != null) txtProvEmail.clear();
-            if (txtProvTelefono != null) txtProvTelefono.clear();
-        } catch (IllegalArgumentException e) {
-            mostrarError(e.getMessage());
+            if (!validarCamposProveedor()) {
+                return;
+            }
+            ProveedorDTO nuevoProveedor = new ProveedorDTO(
+                    txtProvNit.getText().trim(),
+                    txtProvNombre.getText().trim(),
+                    txtProvContacto.getText().trim(),
+                    txtProvEmail.getText().trim(),
+                    txtProvTelefono.getText().trim()
+            );
+            if (inventarioFacade.agregarProveedor(nuevoProveedor)) {
+                cargarProveedores();
+                limpiarFormulario();
+                mostrarMensaje("Proveedor agregado exitosamente", false);
+            } else {
+                mostrarMensaje("Error: Ya existe un proveedor con el NIT" + nuevoProveedor.getNit(), true);
+            }
+
+        } catch (Exception e) {
+            mostrarMensaje("Error al agregar cliente: " + e.getMessage(), true);
+            e.printStackTrace();
         }
     }
-
 
     private boolean validarCamposProveedor() {
         if (txtProvNit.getText().trim().isEmpty()) {
@@ -146,9 +177,8 @@ public class InventarioController implements Initializable {
         return true;
     }
 
-    @FXML
+       @FXML
     void actualizarProveedor() {
-
         String nit = txtProvNit != null ? txtProvNit.getText() : null;
         String nombre = txtProvNombre != null ? txtProvNombre.getText() : null;
         String contacto = txtProvContacto != null ? txtProvContacto.getText() : null;
@@ -158,11 +188,18 @@ public class InventarioController implements Initializable {
         if (nit == null || nit.trim().isEmpty()) { mostrarError("El NIT es obligatorio"); return; }
         try {
             inventarioFacade.actualizarProveedor(proveedorDTO);
-            for (int i = 0; i < proveedores.size(); i++) {
-                if (proveedores.get(i).getNit().equals(nit)) { proveedores.set(i, proveedorDTO); break; }
-            }
-            if (cmbProveedores != null) cmbProveedores.setItems(FXCollections.observableArrayList(proveedores));
+            cargarProveedores();
+            limpiarFormulario();
+            mostrarMensaje("Proveedor actualizado exitosamente", false);
+
         } catch (IllegalArgumentException e) { mostrarError(e.getMessage()); }
+    }
+
+    private void mostrarMensaje(String mensaje, boolean esError) {
+        if (lblMensaje != null) {
+            lblMensaje.setText(mensaje);
+        }
+        lblMensaje.setStyle(esError ? "-fx-text-fill: red;" : "-fx-text-fill: green;");
     }
 
     @FXML
@@ -173,6 +210,8 @@ public class InventarioController implements Initializable {
             inventarioFacade.eliminarProveedor(nit);
             proveedores.removeIf(p -> p.getNit().equals(nit));
             if (cmbProveedores != null) cmbProveedores.setItems(FXCollections.observableArrayList(proveedores));
+            limpiarFormulario();
+            mostrarMensaje("Proveedor eliminado exitosamente", false);
         } catch (IllegalArgumentException e) { mostrarError(e.getMessage()); }
     }
 
@@ -183,6 +222,7 @@ public class InventarioController implements Initializable {
         try {
             ProveedorDTO proveedorDTO=inventarioFacade.buscarProveedorDTO(nit);
             inventarioFacade.activarProveedor(proveedorDTO);
+            mostrarMensaje("Proveedor activado exitosamente", false);
             if (cmbProveedores != null) cmbProveedores.setItems(FXCollections.observableArrayList(proveedores));
         } catch (IllegalArgumentException e) { mostrarError(e.getMessage()); }
     }
@@ -194,6 +234,7 @@ public class InventarioController implements Initializable {
         try {
             ProveedorDTO proveedorDTO=inventarioFacade.buscarProveedorDTO(nit);
             inventarioFacade.inactivarProveedor(proveedorDTO);
+            mostrarMensaje("Proveedor Inactivado exitosamente", false);
             if (cmbProveedores != null) cmbProveedores.setItems(FXCollections.observableArrayList(proveedores));
         } catch (IllegalArgumentException e) { mostrarError(e.getMessage()); }
     }
