@@ -1,14 +1,14 @@
 package co.edu.uniquindio.SOLID.Controlador;
 
-import co.edu.uniquindio.SOLID.Model.DTO.ClienteDTO;
-import co.edu.uniquindio.SOLID.Model.DTO.ProductoDTO;
-import co.edu.uniquindio.SOLID.Model.DTO.ProveedorDTO;
+import co.edu.uniquindio.SOLID.Model.DTO.*;
 import co.edu.uniquindio.SOLID.Model.EntradaInventario;
 import co.edu.uniquindio.SOLID.Model.Minimercado;
 import co.edu.uniquindio.SOLID.Model.Producto;
 import co.edu.uniquindio.SOLID.Model.Proveedor;
 import co.edu.uniquindio.SOLID.Service.Fachadas.InventarioFacade;
 import co.edu.uniquindio.SOLID.Service.Fachadas.MinimercadoFacade;
+import co.edu.uniquindio.SOLID.utils.Mappers.ProductoMapper;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -18,9 +18,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-
 import javax.swing.text.StyledEditorKit;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class InventarioController implements Initializable {
@@ -43,6 +44,7 @@ public class InventarioController implements Initializable {
     @FXML private Label lblMensaje;
 
     private ObservableList<ProveedorDTO> proveedores;
+
     private ObservableList<ProductoDTO> productos;
     private InventarioFacade inventarioFacade;
     private ProveedorDTO proveedorSeleccionado;
@@ -50,7 +52,7 @@ public class InventarioController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        inventarioFacade=new InventarioFacade();
+        inventarioFacade= new InventarioFacade();
         proveedores = FXCollections.observableArrayList(inventarioFacade.getProveedores());
         minimercadoFacade = new MinimercadoFacade();
         productos = FXCollections.observableArrayList(minimercadoFacade.obtenerTodosLosProductos());
@@ -260,14 +262,21 @@ public class InventarioController implements Initializable {
             mostrarError("Cantidad inválida");
             return;
         }
+        List<ItemEntradaDTO> item = new ArrayList<>();
+        item.add(new ItemEntradaDTO(prod.getSku(), cant));
+        EntradaInventarioDTO dto = new EntradaInventarioDTO(proveedorDTO.getNit(), item);
         
         try {
-            minimercadoFacade.registrarEntradaInventario(proveedorDTO, prod, cant);
-            if (lblResultadoEntrada != null) lblResultadoEntrada.setText("Entrada confirmada. Stock " + prod.getSku() + ": " + prod.getStock());
+            inventarioFacade.registrarEntrada(dto);
+            Producto producto = inventarioFacade.buscarProducto(prod.getSku());
+            if (lblResultadoEntrada != null)
+                lblResultadoEntrada.setText("Entrada confirmada. Stock " + prod.getSku() + ": " + producto.getStock());
             if (tblProductosInv != null) tblProductosInv.refresh();
+            cargarProductosEnTabla();
         } catch (IllegalArgumentException e) {
             mostrarError(e.getMessage());
         }
+        cargarProductosEnTabla();
     }
 
     private void mostrarError(String mensaje) {
@@ -277,6 +286,26 @@ public class InventarioController implements Initializable {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
-}
 
+    private void configurarTablaProductos() {
+        colInvSku.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getSku()));
+        colInvNombre.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getNombre()));
+        colInvPrecio.setCellValueFactory(cd -> new SimpleDoubleProperty(cd.getValue().getPrecio()));
+        colInvStock.setCellValueFactory(cd -> new SimpleIntegerProperty(cd.getValue().getStock()));
+        tblProductosInv.setItems(productos);
+    }
+
+    public void cargarProductosEnTabla() {
+        Platform.runLater(() -> {
+            productos.clear();
+            productos.addAll(minimercadoFacade.obtenerTodosLosProductos());
+            tblProductosInv.setItems(productos);
+            tblProductosInv.refresh();
+
+            for (ProductoDTO p : productos) {
+                System.out.println("SKU: " + p.getSku() + ", Stock: " + p.getStock());
+            }
+        });
+    }
+}
 

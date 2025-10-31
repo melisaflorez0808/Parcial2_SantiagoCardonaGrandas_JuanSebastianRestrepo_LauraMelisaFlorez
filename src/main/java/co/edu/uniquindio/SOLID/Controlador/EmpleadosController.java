@@ -206,6 +206,8 @@ public class EmpleadosController implements Initializable {
             }
         } catch (IllegalArgumentException e) { mostrarMensaje(e.getMessage()); }
     }
+
+
 }
 
 

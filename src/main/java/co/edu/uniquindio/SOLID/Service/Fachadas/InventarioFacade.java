@@ -10,6 +10,7 @@ public class InventarioFacade {
     private final ProveedorService proveedorService;
     private final InventarioService inventarioService;
 
+
     public InventarioFacade() {
         this.proveedorService = new ProveedorService();
         this.inventarioService = new InventarioService();
@@ -21,11 +22,15 @@ public class InventarioFacade {
     }
 
     public List<ProveedorDTO> getProveedores() {
-        return proveedorService.obtenerTodosLosRepartidores();
+        return proveedorService.obtenerTodosLosProveedores();
     }
 
     public boolean actualizarProveedor(ProveedorDTO proveedorDTO) {
         return proveedorService.actualizarProveedor(proveedorDTO);
+    }
+
+    public Producto buscarProducto(String sku) {
+       return inventarioService.buscarProducto(sku);
     }
 
     public boolean inactivarProveedor(ProveedorDTO proveedorDTO) {

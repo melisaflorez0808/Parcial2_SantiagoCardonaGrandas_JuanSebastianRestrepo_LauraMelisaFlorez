@@ -59,10 +59,6 @@ public class EmpleadoService {
         return true;
     }
 
-    public boolean existeEmpleado(String id) {
-        return buscarEmpleadoEntity(id) != null;
-    }
-
     public Empleado buscarEmpleadoEntity(String cedula) {
         for (Empleado empleado : minimercado.getEmpleados()) {
             if (empleado.getId().equals(cedula)) {

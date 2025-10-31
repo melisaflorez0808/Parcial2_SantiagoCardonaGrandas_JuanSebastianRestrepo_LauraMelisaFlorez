@@ -14,8 +14,10 @@ public class Producto {
     }
 
     public void aumentarStock(int cantidad) {
-        this.stock += cantidad;
-
+        if (cantidad > 0) {
+            this.stock += cantidad;
+            System.out.println("Stock nuevo de " + this.Sku + ": " + this.stock);
+        }
     }
 
     public void disminuirStock(int cantidad) {

@@ -26,7 +26,7 @@ public class ProveedorService {
     }
 
     /*Read*/
-    public List<ProveedorDTO> obtenerTodosLosRepartidores() {
+    public List<ProveedorDTO> obtenerTodosLosProveedores() {
         List<ProveedorDTO> proveedoresDTOS = new ArrayList<>();
         for (Proveedor proveedor : minimercado.getProveedores()) {
             proveedoresDTOS.add(ProveedorMapper.toDTO(proveedor));

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntradaInventarioDTO {
+    public static int contador = 1;
     private String id;
     private String nitProveedor;
     private LocalDateTime fecha;
@@ -16,8 +17,9 @@ public class EntradaInventarioDTO {
 
     public EntradaInventarioDTO() {}
 
-    public EntradaInventarioDTO(String id, String nitProveedor, List<ItemEntradaDTO> items) {
-        this.id = id;
+    public EntradaInventarioDTO(String nitProveedor, List<ItemEntradaDTO> items) {
+        this.id = "0" + contador;
+        contador += 1;
         this.nitProveedor = nitProveedor;
         this.fecha = LocalDateTime.now();
         this.items = items;

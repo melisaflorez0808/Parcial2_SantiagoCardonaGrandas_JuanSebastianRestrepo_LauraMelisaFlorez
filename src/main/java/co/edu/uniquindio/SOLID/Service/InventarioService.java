@@ -17,11 +17,12 @@ public class InventarioService {
         Proveedor proveedor = buscarProveedorPorNit(dto.getNitProveedor());
         if (proveedor == null) {
             throw new IllegalArgumentException("Proveedor no existe");
-        }//Si halla al proveedor, ahora debo de buscar los productos
+        }
         if (dto == null) {
-            throw new IllegalArgumentException("No ha seleccionado un entrada valida");
+            throw new IllegalArgumentException("No ha seleccionado una entrada valida");
         }
         EntradaInventario entrada = new EntradaInventario(dto.getId(), proveedor);
+
         for (ItemEntradaDTO itemDTO : dto.getItems()) {
             Producto productoEncontrado = null;
             for (Producto producto : minimercado.getProductos()) {
@@ -34,15 +35,9 @@ public class InventarioService {
                 throw new IllegalArgumentException("Producto no encontrado: " + itemDTO.getSkuProducto());
             }
             entrada.agregarItem(new ItemEntrada(productoEncontrado, itemDTO.getCantidad()));
-            confirmarEntrada(entrada);
+            System.out.println("Item DTO: " + itemDTO.getSkuProducto() + " cantidad: " + itemDTO.getCantidad());
         }
-    }
-
-    private Proveedor buscarProveedorPorNit(String nit) {
-        for (Proveedor p : minimercado.getProveedores()){
-            if (p.getNit().equals(nit)) return p;
-        }
-        return null;
+        confirmarEntrada(entrada);
     }
 
     public void confirmarEntrada(EntradaInventario entrada) {
@@ -53,6 +48,7 @@ public class InventarioService {
                 System.out.println("No se puede ingresar cantidad <= 0 para el producto " + producto.getSku());
                 break;
             }
+            System.out.println("Aumentando stock de " + producto.getSku() + " en " + cantidad);
             producto.aumentarStock(cantidad);
             MovimientoInventario mov = new MovimientoInventario(
                     "MOV-" + System.currentTimeMillis(),
@@ -64,6 +60,21 @@ public class InventarioService {
             minimercado.registrarMovimiento(mov);
         }
     }
+
+    private Proveedor buscarProveedorPorNit(String nit) {
+        for (Proveedor p : minimercado.getProveedores()){
+            if (p.getNit().equals(nit)) return p;
+        }
+        return null;
+    }
+
+    public Producto buscarProducto(String sku) {
+        for (Producto p : minimercado.getProductos()) {
+            if (p.getSku().equals(sku)) return p;
+        }
+        return null;
+    }
+
 
     public void retirarProducto(String sku, int cantidad) {
         Producto producto = null;
