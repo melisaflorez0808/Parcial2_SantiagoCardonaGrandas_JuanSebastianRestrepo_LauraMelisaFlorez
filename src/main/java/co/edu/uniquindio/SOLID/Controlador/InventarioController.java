@@ -1,14 +1,8 @@
 package co.edu.uniquindio.SOLID.Controlador;
-
 import co.edu.uniquindio.SOLID.Model.DTO.*;
-import co.edu.uniquindio.SOLID.Model.EntradaInventario;
-import co.edu.uniquindio.SOLID.Model.Minimercado;
 import co.edu.uniquindio.SOLID.Model.Producto;
-import co.edu.uniquindio.SOLID.Model.Proveedor;
 import co.edu.uniquindio.SOLID.Service.Fachadas.InventarioFacade;
 import co.edu.uniquindio.SOLID.Service.Fachadas.MinimercadoFacade;
-import co.edu.uniquindio.SOLID.utils.Mappers.ProductoMapper;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -18,7 +12,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javax.swing.text.StyledEditorKit;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +38,6 @@ public class InventarioController implements Initializable {
     @FXML private Button btnInventario;
 
     private ObservableList<ProveedorDTO> proveedores;
-
     private ObservableList<ProductoDTO> productos;
     private InventarioFacade inventarioFacade;
     private ProveedorDTO proveedorSeleccionado;
@@ -73,6 +65,7 @@ public class InventarioController implements Initializable {
             tblProductosInv.setItems(productos);
         }
         if (tpCrearProveedor != null) tpCrearProveedor.setExpanded(false);
+        cargarProductosEnTabla();
     }
 
     private void cargarProveedores() {
@@ -288,12 +281,10 @@ public class InventarioController implements Initializable {
     }
     
     public void cargarProductosEnTabla() {
-        Platform.runLater(() -> {
-            productos.clear();
-            productos.addAll(minimercadoFacade.obtenerTodosLosProductos());
-            tblProductosInv.setItems(productos);
-            tblProductosInv.refresh();
-        });
+        productos.clear();
+        productos.addAll(minimercadoFacade.obtenerTodosLosProductos());
+        tblProductosInv.setItems(productos);
+        tblProductosInv.refresh();
     }
 
     @FXML

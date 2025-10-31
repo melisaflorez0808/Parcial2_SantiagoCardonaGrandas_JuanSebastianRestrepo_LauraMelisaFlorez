@@ -3,18 +3,21 @@ import co.edu.uniquindio.SOLID.Model.*;
 import co.edu.uniquindio.SOLID.Model.DTO.EntradaInventarioDTO;
 import co.edu.uniquindio.SOLID.Model.DTO.ItemEntradaDTO;
 
-import java.util.List;
-
 public class InventarioService {
     private final Minimercado minimercado;
+    private final ProveedorService proveedorService;
+    private final ProductoService productoService;
 
 
     public InventarioService() {
         this.minimercado = Minimercado.getInstancia();
+        this.proveedorService = new ProveedorService();
+        this.productoService = new ProductoService();
+
     }
 
     public void registrarEntrada(EntradaInventarioDTO dto) {
-        Proveedor proveedor = buscarProveedorPorNit(dto.getNitProveedor());
+        Proveedor proveedor = proveedorService.buscarProvedorEntity(dto.getNitProveedor());
         if (proveedor == null) {
             throw new IllegalArgumentException("Proveedor no existe");
         }
@@ -40,6 +43,10 @@ public class InventarioService {
         confirmarEntrada(entrada);
     }
 
+    public Producto buscarProducto(String sku){
+        return productoService.buscarProductoEntity(sku);
+    }
+
     public void confirmarEntrada(EntradaInventario entrada) {
         for (ItemEntrada item : entrada.getItems()) {
             Producto producto = item.getProducto();
@@ -60,21 +67,6 @@ public class InventarioService {
             minimercado.registrarMovimiento(mov);
         }
     }
-
-    private Proveedor buscarProveedorPorNit(String nit) {
-        for (Proveedor p : minimercado.getProveedores()){
-            if (p.getNit().equals(nit)) return p;
-        }
-        return null;
-    }
-
-    public Producto buscarProducto(String sku) {
-        for (Producto p : minimercado.getProductos()) {
-            if (p.getSku().equals(sku)) return p;
-        }
-        return null;
-    }
-
 
     public void retirarProducto(String sku, int cantidad) {
         Producto producto = null;

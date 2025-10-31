@@ -16,10 +16,12 @@ import java.util.List;
 public class PedidoService {
     ProductoService productoService;
     ClienteService clienteService;
+    InventarioService inventarioService;
 
     public PedidoService() {
         this.productoService = new ProductoService();
         this.clienteService = new ClienteService();
+        this.inventarioService = new InventarioService();
     }
 
     public Pedido crearPedido(PedidoDTO pedidoDTO) {
@@ -79,19 +81,16 @@ public class PedidoService {
     public ResumenPedidoDTO procesarPedido(PedidoDTO pedidoDTO) {
         Pedido pedidoCreado = crearPedido(pedidoDTO);
 
-        // Validar stock disponible antes de efectuar cargos y salidas
         for (ItemPedido item : pedidoCreado.getItems()) {
             Producto producto = item.getProducto();
             int cantidad = item.getCantidad();
-            if (!producto.tieneStockSuficiente(cantidad)) {
+            if (! (cantidad>=0 && producto.getStock() >= cantidad)){
                 throw new IllegalArgumentException(
                     "Stock insuficiente para SKU " + producto.getSku() + ": disponible=" + producto.getStock() + ", requerido=" + cantidad
                 );
             }
         }
 
-        // Descontar stock y registrar movimientos de salida
-        InventarioService inventarioService = new InventarioService();
         for (ItemPedido item : pedidoCreado.getItems()) {
             inventarioService.retirarProducto(item.getProducto().getSku(), item.getCantidad());
         }
