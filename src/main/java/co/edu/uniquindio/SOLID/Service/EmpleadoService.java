@@ -19,7 +19,7 @@ public class EmpleadoService {
         this.minimercado = Minimercado.getInstancia();
     }
 
-    public boolean crearEmpleado(EmpleadoDTO empleadoDTO) {
+    public boolean agregarEmpleado(EmpleadoDTO empleadoDTO) {
         if (buscarEmpleadoEntity(empleadoDTO.getId()) != null) {
             return false;
         }
@@ -48,6 +48,24 @@ public class EmpleadoService {
             return false;
         }
         EmpleadoMapper.updateEntityFromDTO(empleado, empleadoDTO);
+        return true;
+    }
+
+    public boolean inactivarEmpleado(EmpleadoDTO empleadoDTO) {
+        Empleado empleado = buscarEmpleadoEntity(empleadoDTO.getId());
+        if (empleado == null) {
+            return false;
+        }
+        empleado.setActivo(false);
+        return true;
+    }
+
+    public boolean activarEmpleado(EmpleadoDTO empleadoDTO) {
+        Empleado empleado = buscarEmpleadoEntity(empleadoDTO.getId());
+        if (empleado == null) {
+            return false;
+        }
+        empleado.setActivo(true);
         return true;
     }
 

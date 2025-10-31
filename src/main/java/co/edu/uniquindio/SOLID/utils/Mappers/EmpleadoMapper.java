@@ -27,6 +27,19 @@ public class EmpleadoMapper {
         if (entity == null || dto == null) return;
         entity.setNombre(dto.getNombre());
         entity.setRol(dto.getRol());
+        entity.setActivo(dto.isActivo());
     }
+
+    public static void updateEntityFromDTOActivo(Empleado entity, EmpleadoDTO dto) {
+        if (entity == null || dto == null) return;
+        entity.setActivo(true);
+    }
+
+    public static void updateEntityFromDTOInactivo(Empleado entity, EmpleadoDTO dto) {
+        if (entity == null || dto == null) return;
+        entity.setActivo(false);
+    }
+
+
 
 }

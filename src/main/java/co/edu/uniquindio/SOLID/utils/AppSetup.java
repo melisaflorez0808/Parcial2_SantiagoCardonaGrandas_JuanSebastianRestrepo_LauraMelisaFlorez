@@ -1,10 +1,12 @@
 package co.edu.uniquindio.SOLID.utils;
 
 import co.edu.uniquindio.SOLID.Model.Cliente;
+import co.edu.uniquindio.SOLID.Model.DTO.EmpleadoDTO;
 import co.edu.uniquindio.SOLID.Model.Empleado;
 import co.edu.uniquindio.SOLID.Model.Minimercado;
 import co.edu.uniquindio.SOLID.Model.Producto;
 import co.edu.uniquindio.SOLID.Model.Proveedor;
+import co.edu.uniquindio.SOLID.Service.Fachadas.EmpleadoFacade;
 
 public class AppSetup {
 
@@ -96,10 +98,10 @@ public class AppSetup {
     }
 
     public void inicializarEmpleados() {
-        Minimercado minimercado = Minimercado.getInstancia();
-        minimercado.agregarEmpleado(new Empleado("EMP-001", "Julian", Empleado.Rol.CAJERO));
-        minimercado.agregarEmpleado(new Empleado("EMP-002", "Andrea", Empleado.Rol.BODEGUERO));
-        minimercado.agregarEmpleado(new Empleado("EMP-003", "Pablo", Empleado.Rol.CAJERO));
+        EmpleadoFacade empleadoFacade = new EmpleadoFacade();
+        empleadoFacade.agregarEmpleado(new EmpleadoDTO("EMP-001", "Julian", Empleado.Rol.CAJERO));
+        empleadoFacade.agregarEmpleado(new EmpleadoDTO("EMP-002", "Andrea", Empleado.Rol.BODEGUERO));
+        empleadoFacade.agregarEmpleado(new EmpleadoDTO("EMP-003", "Pablo", Empleado.Rol.CAJERO));
     }
 
 }

@@ -35,8 +35,15 @@ public class EmpleadoDTO {
     public Empleado.Rol getRol() {
         return rol;
     }
-
     public void setRol(Empleado.Rol rol) {
         this.rol = rol;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 }

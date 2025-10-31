@@ -22,10 +22,11 @@ public class Empleado {
 
     public void setNombre(String nombre) { this.nombre = nombre; }
     public void setRol(Rol rol) { this.rol = rol; }
-    public void inactivar() { this.activo = false; }
-    public void activar() { this.activo = true; }
-
     public void cambiarRol(Rol nuevoRol) { this.rol = nuevoRol; }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
 }
 
 
