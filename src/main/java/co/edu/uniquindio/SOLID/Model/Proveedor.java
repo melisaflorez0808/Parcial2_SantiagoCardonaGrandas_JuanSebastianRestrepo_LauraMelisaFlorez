@@ -28,12 +28,9 @@ public class Proveedor {
     public void setContacto(String contacto) { this.contacto = contacto; }
     public void setEmail(String email) { this.email = email; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
-    public void inactivar() { this.activo = false; }
     public void activar() { this.activo = true; }
+    public void desactivar(){ this.activo = false; }
 
-    public boolean validarEmail() {
-        return email != null && email.contains("@");
-    }
 
     @Override
     public String toString() {

@@ -27,11 +27,22 @@ public class InventarioFacade {
         return proveedorService.actualizarProveedor(proveedorDTO);
     }
 
+    public boolean inactivarProveedor(ProveedorDTO proveedorDTO) {
+        return proveedorService.inactivarProveedor(proveedorDTO);
+    }
+    public boolean activarProveedor(ProveedorDTO proveedorDTO){
+        return proveedorService.activarProveedor(proveedorDTO);
+    }
+
     public boolean eliminarProveedor(String nit) {
         return proveedorService.eliminarProveedor(nit);
     }
 
-    public Proveedor buscarProveedorEntity(String id){
-        return proveedorService.buscarProvedorEntity(id);
+    public Proveedor buscarProveedorEntity(String nit){
+        return proveedorService.buscarProvedorEntity(nit);
+    }
+
+    public ProveedorDTO buscarProveedorDTO(String nit){
+        return proveedorService.buscarProveedorPorNit(nit);
     }
 }

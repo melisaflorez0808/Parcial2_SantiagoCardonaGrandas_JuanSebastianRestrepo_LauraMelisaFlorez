@@ -44,6 +44,17 @@ public class ProveedorService {
         return true;
     }
 
+    public boolean inactivarProveedor(ProveedorDTO proveedorDTO) {
+        Proveedor proveedor = buscarProvedorEntity(proveedorDTO.getNit());
+        proveedor.desactivar();
+        return true;
+    }
+    public boolean activarProveedor(ProveedorDTO proveedorDTO) {
+        Proveedor proveedor = buscarProvedorEntity(proveedorDTO.getNit());
+        proveedor.activar();
+        return true;
+    }
+
     /*Delete*/
     public boolean eliminarProveedor(String nit) {
         Proveedor proveedor = buscarProvedorEntity(nit);
