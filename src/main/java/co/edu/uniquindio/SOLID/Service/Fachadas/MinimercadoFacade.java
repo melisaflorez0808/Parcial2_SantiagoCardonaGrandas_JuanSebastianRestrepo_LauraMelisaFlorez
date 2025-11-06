@@ -88,7 +88,7 @@ public class MinimercadoFacade {
         return pedidoService.calcularCostoEnvio(tipoEnvio);
     }
     
-    public double calcularTotal(double subtotal, double costoEnvio) {
-        return pedidoService.calcularTotal(subtotal, costoEnvio);
+    public double calcularTotal(PedidoDTO pedidoDTO, double costoEnvio) {
+        return pedidoService.calcularTotal(pedidoDTO, costoEnvio);
     }
 }

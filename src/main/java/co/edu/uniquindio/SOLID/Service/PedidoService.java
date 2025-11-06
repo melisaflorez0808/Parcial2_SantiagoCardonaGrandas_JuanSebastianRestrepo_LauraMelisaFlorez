@@ -3,6 +3,8 @@ import co.edu.uniquindio.SOLID.Model.*;
 import co.edu.uniquindio.SOLID.Model.DTO.ItemPedidoDTO;
 import co.edu.uniquindio.SOLID.Model.DTO.PedidoDTO;
 import co.edu.uniquindio.SOLID.Model.DTO.ResumenPedidoDTO;
+import co.edu.uniquindio.SOLID.Service.Descuento.EstrategiaDescuento;
+import co.edu.uniquindio.SOLID.Service.Descuento.GestorDescuentos;
 import co.edu.uniquindio.SOLID.Service.Envio.Envio;
 import co.edu.uniquindio.SOLID.Service.Envio.EnvioExpress;
 import co.edu.uniquindio.SOLID.Service.Notificacion.Notificacion;
@@ -51,7 +53,7 @@ public class PedidoService {
         Pedido pedido = pedidoBuilder.build();
 
         Envio envio = new EnvioExpress();
-        double total = calcularTotal(pedido, envio);
+        double total = calcularTotal(pedidoDTO, envio.calcularCostoEnvio());
         System.out.println("Total del pedido $ " + total);
 
         MetodoPago pago = PagoFactory.crearPago("TARJETA");
@@ -74,8 +76,16 @@ public class PedidoService {
         return subtotal;
     }
 
-    public double calcularTotal(Pedido pedido, Envio envio) {
-        return calcularSubtotal(pedido) + envio.calcularCostoEnvio();
+    public double calcularTotal(PedidoDTO pedidoDTO, double costoEnvio) {
+        GestorDescuentos gestor = new GestorDescuentos();
+        EstrategiaDescuento estrategia = gestor.obtenerEstrategia(pedidoDTO.codigoDescuento);
+
+        double descuento = 0.0;
+        if (estrategia != null && estrategia.esAplicable(pedidoDTO)) {
+            descuento = estrategia.calcularDescuento(calcularSubtotal(pedidoDTO.itemsPedido), pedidoDTO);
+        }
+
+        return calcularSubtotal(pedidoDTO.itemsPedido) - descuento + costoEnvio;
     }
    
     public ResumenPedidoDTO procesarPedido(PedidoDTO pedidoDTO) {
@@ -104,7 +114,7 @@ public class PedidoService {
         resumen.codigoDescuento = pedidoDTO.codigoDescuento;
         resumen.subtotal = calcularSubtotal(pedidoDTO.itemsPedido);
         resumen.costoEnvio = calcularCostoEnvio("ESTANDAR");
-        resumen.total = calcularTotal(resumen.subtotal, resumen.costoEnvio);
+        resumen.total = calcularTotal(pedidoDTO, resumen.costoEnvio);
         resumen.estado = "PROCESADO";
 
         return resumen;
@@ -114,6 +124,10 @@ public class PedidoService {
      * Calcula subtotal de items DTO
      */
     public double calcularSubtotal(List<ItemPedidoDTO> items) {
+        if (items == null || items.isEmpty()) {
+            System.out.println("Lista de ítems vacía o nula al calcular subtotal.");
+            return 0.0;
+        }
         double subtotal = 0;
         for (ItemPedidoDTO item : items) {
             Producto producto = productoService.buscarProductoEntity(item.skuProducto);
@@ -134,11 +148,6 @@ public class PedidoService {
             return 7000; // ESTANDAR
         }
     }
-    
-    /**
-     * Calcula total simple
-     */
-    public double calcularTotal(double subtotal, double costoEnvio) {
-        return subtotal + costoEnvio;
-    }
+
+
 }

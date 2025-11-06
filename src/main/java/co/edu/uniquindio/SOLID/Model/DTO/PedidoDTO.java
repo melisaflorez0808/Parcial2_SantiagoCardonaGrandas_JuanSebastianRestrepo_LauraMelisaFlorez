@@ -28,4 +28,8 @@ public class PedidoDTO {
                 ", direccionEnvio='" + direccionEnvio + '\'' +
                 '}';
     }
+
+    public void setItems(List<ItemPedidoDTO> items) {
+        this.itemsPedido = items;
+    }
 }

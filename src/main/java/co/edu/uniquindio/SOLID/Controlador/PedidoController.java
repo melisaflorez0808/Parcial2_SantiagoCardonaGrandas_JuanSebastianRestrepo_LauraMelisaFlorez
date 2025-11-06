@@ -42,11 +42,13 @@ public class PedidoController implements Initializable {
 
     private MinimercadoFacade minimercadoFacade;
     private ObservableList<ItemPedidoDTO> itemsPedido;
+    private PedidoDTO pedidoDTO;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         minimercadoFacade = new MinimercadoFacade();
         itemsPedido = FXCollections.observableArrayList();
+        pedidoDTO = new PedidoDTO();
         
         // Configurar tabla
         configurarTabla();
@@ -76,8 +78,7 @@ public class PedidoController implements Initializable {
             cmbTipoNotificacion.setItems(FXCollections.observableArrayList("EMAIL", "SMS"));
             cmbTipoNotificacion.setValue("EMAIL");
         }
-        
-        actualizarTotales();
+
         System.out.println("PedidoController inicializado correctamente");
     }
 
@@ -134,35 +135,32 @@ public class PedidoController implements Initializable {
     }
 
     private void cargarProductos() {
-        if (cmbProductos != null) {
-            List<ProductoDTO> productosDTO = minimercadoFacade.obtenerTodosLosProductos();
-            cmbProductos.setItems(FXCollections.observableArrayList(productosDTO));
-            
-            // Configurar cómo se muestra el producto
-            cmbProductos.setButtonCell(new ListCell<ProductoDTO>() {
-                @Override
-                protected void updateItem(ProductoDTO item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        setText(item.toString());
-                    }
-                }
-            });
-            
-            cmbProductos.setCellFactory(param -> new ListCell<ProductoDTO>() {
-                @Override
-                protected void updateItem(ProductoDTO item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        setText(item.toString());
-                    }
-                }
-            });
+        if (cmbProductos==null){
+            return;
         }
+        List<ProductoDTO> productosDTO = minimercadoFacade.obtenerTodosLosProductos();
+        if (productosDTO == null||productosDTO.isEmpty()) {
+            cmbProductos.setItems(FXCollections.observableArrayList());
+            return;
+        }
+
+        cmbProductos.setItems(FXCollections.observableArrayList(productosDTO));
+
+        cmbProductos.setButtonCell(new ListCell<ProductoDTO>() {
+            @Override
+            protected void updateItem(ProductoDTO item, boolean empty) {
+                super.updateItem(item, empty);
+                setText((empty || item == null) ? null : item.getNombre());
+            }
+        });
+        cmbProductos.setCellFactory(param -> new ListCell<ProductoDTO>() {
+            @Override
+            protected void updateItem(ProductoDTO item, boolean empty) {
+                super.updateItem(item, empty);
+                setText((empty || item == null) ? null : item.getNombre());
+            }
+        });
+        actualizarTotales();
     }
 
     @FXML
@@ -218,7 +216,6 @@ public class PedidoController implements Initializable {
                 return;
             }
 
-            PedidoDTO pedidoDTO = new PedidoDTO();
             pedidoDTO.codigo = "PED-" + System.currentTimeMillis();
             pedidoDTO.idCliente = cmbClientes.getValue().getCedula();
             pedidoDTO.itemsPedido = new ArrayList<>(itemsPedido);
@@ -230,7 +227,7 @@ public class PedidoController implements Initializable {
 
             double subtotal = calcularSubtotal();
             double costoEnvio = calcularCostoEnvio();
-            double total = minimercadoFacade.calcularTotal(subtotal, costoEnvio);
+            double total = minimercadoFacade.calcularTotal(pedidoDTO, costoEnvio);
 
             txtResultado.setText(
                 "PEDIDO PROCESADO EXITOSAMENTE\n\n" +
@@ -324,9 +321,15 @@ public class PedidoController implements Initializable {
     }
 
     private void actualizarTotales() {
-        double subtotal = calcularSubtotal();
+        if (pedidoDTO == null) return;
+
+        if (pedidoDTO.itemsPedido == null) {
+            pedidoDTO.setItems(new ArrayList<>());
+        }
+
+        double subtotal = minimercadoFacade.calcularSubtotal(pedidoDTO.itemsPedido);
         double costoEnvio = calcularCostoEnvio();
-        double total = minimercadoFacade.calcularTotal(subtotal, costoEnvio);
+        double total = minimercadoFacade.calcularTotal(pedidoDTO, costoEnvio);
 
         if (lblSubtotal != null) lblSubtotal.setText(String.format("$%.2f", subtotal));
         if (lblCostoEnvio != null) lblCostoEnvio.setText(String.format("$%.2f", costoEnvio));
